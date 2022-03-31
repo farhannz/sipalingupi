@@ -79,9 +79,14 @@ class _HomePageState extends State<HomePage> {
                           onPressed: () => {},
                           style: ElevatedButton.styleFrom(
                             primary: Colors.white,
+                            minimumSize: Size(35, 35),
+                            shape: RoundedRectangleBorder( //to set border radius to button
+                                borderRadius: BorderRadius.circular(10)
+                            ),
                           ),
                           child: Icon(
                             Icons.menu,
+                            size: 40,
                             color: Colors.red,
                           ),
                         ),
