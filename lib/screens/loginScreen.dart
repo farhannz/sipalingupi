@@ -91,31 +91,6 @@ class _LoginScreenState extends State<LoginScreen> {
             ],
           ),
         ),
-        //   child: SingleChildScrollView(
-        //     child: Row(
-        //       children: [
-        //         Expanded(
-        //           child: LayoutBuilder(
-        //             builder: (BuildContext context, BoxConstraints constraints) {
-        //               return Column(
-        //                 mainAxisAlignment: MainAxisAlignment.center,
-        //                 crossAxisAlignment: CrossAxisAlignment.stretch,
-        //                 children: [
-        //                   SizedBox(height: 50),
-        //                   Image.asset(
-        //                     './assets/images/login-img.png',
-        //                     width: 300,
-        //                     height: 300,
-        //                   ),
-        //
-        //                 ],
-        //               );
-        //             },
-        //           ),
-        //         ),
-        //       ],
-        //     ),
-        //   ),
       ),
     );
   }
