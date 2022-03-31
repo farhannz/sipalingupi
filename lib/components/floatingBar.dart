@@ -37,6 +37,9 @@ class _FloatingBarState extends State<FloatingBar> {
             break;
         }
 
+        Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+          return page;
+        }));
         setState(() => _index = val);
       },
       currentIndex: _index,

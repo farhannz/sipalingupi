@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sipaling_upi/components/floatingBar.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -7,6 +8,7 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Text("home"),
+      bottomNavigationBar: FloatingBar(),
     );
   }
 }
