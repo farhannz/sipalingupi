@@ -36,6 +36,7 @@ dependencies:
   cupertino_icons: ^1.0.2
   floating_bottom_navigation_bar: ^1.5.2
   iconify_flutter: ^0.0.3
+  charts_flutter: ^0.12.0
 
 dev_dependencies:
   flutter_test:

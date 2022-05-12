@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:floating_bottom_navigation_bar/floating_bottom_navigation_bar.dart';
+import 'package:sipaling_upi/screens/dosenScreen.dart';
 import 'package:sipaling_upi/screens/homePage.dart';
-import '../screens/mahasiswaScreen.dart';
+import 'package:sipaling_upi/screens/mahasiswaScreen.dart';
+import 'package:sipaling_upi/screens/prodiScreen.dart';
 
 class FloatingBar extends StatefulWidget {
   const FloatingBar({Key? key}) : super(key: key);
@@ -30,10 +32,14 @@ class _FloatingBarState extends State<FloatingBar> {
             }
             break;
           case 2:
-            {}
+            {
+              page = DosenScreen();
+            }
             break;
           case 3:
-            {}
+            {
+              page = ProdiScreen();
+            }
             break;
         }
 

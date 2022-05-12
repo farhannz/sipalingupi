@@ -37,7 +37,7 @@ class _HomePageState extends State<HomePage> {
                             alignment: Alignment.topLeft,
                             child: Padding(
                               padding: EdgeInsets.only(
-                                top: 8.0,
+                                top: 20.0,
                               ),
                               child: Text(
                                 "Dashboard",
@@ -46,7 +46,7 @@ class _HomePageState extends State<HomePage> {
                                   fontFamily:
                                       "Poppins", // Poppins semi-bold, 25
                                   fontWeight: FontWeight.w600,
-                                  fontSize: 25.0,
+                                  fontSize: 22.0,
                                   color: Colors.black,
                                 ),
                               ),
@@ -56,7 +56,7 @@ class _HomePageState extends State<HomePage> {
                             alignment: Alignment.bottomLeft,
                             child: Padding(
                               padding: EdgeInsets.only(
-                                bottom: 8.0,
+                                bottom: 15.0,
                               ),
                               child: Text(
                                 "SIPALING-UPI",
@@ -64,7 +64,7 @@ class _HomePageState extends State<HomePage> {
                                 style: TextStyle(
                                   fontFamily: "Poppins", // Poppins Light, 15
                                   fontWeight: FontWeight.w300,
-                                  fontSize: 15.0,
+                                  fontSize: 12.0,
                                   color: Colors.black,
                                 ),
                               ),
@@ -80,9 +80,9 @@ class _HomePageState extends State<HomePage> {
                           style: ElevatedButton.styleFrom(
                             primary: Colors.white,
                             minimumSize: Size(35, 35),
-                            shape: RoundedRectangleBorder( //to set border radius to button
-                                borderRadius: BorderRadius.circular(10)
-                            ),
+                            shape: RoundedRectangleBorder(
+                                //to set border radius to button
+                                borderRadius: BorderRadius.circular(10)),
                           ),
                           child: Icon(
                             Icons.menu,
@@ -103,13 +103,18 @@ class _HomePageState extends State<HomePage> {
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
-                            TextFormField(
-                              decoration: InputDecoration(
-                                  icon: Icon(Icons.search),
-                                  hintText: "Search Data"),
+                            Padding(
+                              padding: const EdgeInsets.only(top: 10),
+                              child: TextFormField(
+                                decoration: const InputDecoration(
+                                  prefixIcon: Icon(Icons.search),
+                                  label: Text('Search Data'),
+                                  border: OutlineInputBorder(),
+                                ),
+                              ),
                             ),
                             Padding(
-                              padding: EdgeInsets.only(top: 15.0),
+                              padding: EdgeInsets.only(top: 20),
                               child: Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
@@ -139,24 +144,49 @@ class _HomePageState extends State<HomePage> {
                               itemBuilder: (BuildContext context, int index) {
                                 return Padding(
                                   padding: EdgeInsets.only(top: 15.0),
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.circular(25),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          blurRadius: 5,
-                                        )
-                                      ],
-                                    ),
-                                    height: 200,
-                                    child: Align(
-                                      alignment: Alignment.center,
-                                      child: Text(
-                                        "$index",
-                                        textAlign: TextAlign.center,
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      Align(
+                                        alignment: Alignment.topLeft,
+                                        child: Padding(
+                                          padding: const EdgeInsets.only(
+                                            top: 10,
+                                            bottom: 15,
+                                          ),
+                                          child: Text(
+                                            "Lorem Ipsum",
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                        ),
                                       ),
-                                    ),
+                                      Container(
+                                        decoration: BoxDecoration(
+                                          color: Color.fromARGB(
+                                              255, 241, 241, 241),
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color:
+                                                  Colors.grey.withOpacity(0.8),
+                                              spreadRadius: 1,
+                                              blurRadius: 5,
+                                              // offset: Offset(0,7), // changes position of shadow
+                                            ),
+                                          ],
+                                        ),
+                                        height: 200,
+                                        child: Align(
+                                          alignment: Alignment.center,
+                                          child: Text(
+                                            "$index",
+                                            textAlign: TextAlign.center,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 );
                               },
@@ -167,43 +197,6 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ]),
                 ),
-                // SliverFillRemaining(
-                //   hasScrollBody: false,
-                //   child: FloatingBar(),
-                //   // Align(
-                //   //   alignment: Alignment.bottomCenter,
-                //   //   child: Padding(
-                //   //     padding: EdgeInsets.only(bottom: 30),
-                //   //     child: Container(
-                //   //       decoration: BoxDecoration(
-                //   //         color: Colors.white,
-                //   //         boxShadow: [
-                //   //           BoxShadow(
-                //   //             color: Colors.black26,
-                //   //             spreadRadius: 0,
-                //   //             blurRadius: 4,
-                //   //             offset: Offset(0, 5),
-                //   //           )
-                //   //         ],
-                //   //         borderRadius: BorderRadius.all(
-                //   //           Radius.circular(50),
-                //   //         ),
-                //   //       ),
-                //   //       height: 66,
-                //   //       child: IntrinsicWidth(
-                //   //         child: Row(
-                //   //           mainAxisAlignment: MainAxisAlignment.spaceAround,
-                //   //           children: <Widget>[
-                //   //             Icon(Icons.star, size: 50),
-                //   //             Icon(Icons.star, size: 50),
-                //   //             Icon(Icons.star, size: 50),
-                //   //           ],
-                //   //         ),
-                //   //       ),
-                //   //     ),
-                //   //   ),
-                //   // ),
-                // ),
               ],
             ),
             Align(

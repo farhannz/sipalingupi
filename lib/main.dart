@@ -14,7 +14,7 @@ class MyApp extends StatelessWidget {
       title: 'SIPALING UPI',
       theme: ThemeData(
         fontFamily: 'Poppins',
-        // scaffoldBackgroundColor: Color.fromARGB(255, 255, 255, 255)),
+        scaffoldBackgroundColor: Color.fromARGB(255, 255, 255, 255),
         primarySwatch: Colors.red,
       ),
       home: const SplashScreen(),

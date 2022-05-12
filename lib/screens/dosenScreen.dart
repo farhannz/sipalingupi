@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:sipaling_upi/components/floatingBar.dart';
 
-class MahasiswaScreen extends StatelessWidget {
-  const MahasiswaScreen({Key? key}) : super(key: key);
+class DosenScreen extends StatelessWidget {
+  const DosenScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -14,8 +14,7 @@ class MahasiswaScreen extends StatelessWidget {
               slivers: [
                 SliverAppBar(
                   automaticallyImplyLeading: false,
-                  titleSpacing: 10,
-                  expandedHeight: 100,
+                  expandedHeight: 60,
                   pinned: true,
                   backgroundColor: Colors.white,
                   title: Row(
