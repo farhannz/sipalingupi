@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:sipaling_upi/components/floatingBar.dart';
+import 'package:sipaling_upi/data/mahasiswa/data.dart';
 
 class MahasiswaScreen extends StatelessWidget {
   const MahasiswaScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    double screenSize = MediaQuery.of(context).size.width;
     return Scaffold(
       body: SafeArea(
         child: Stack(
@@ -14,8 +16,7 @@ class MahasiswaScreen extends StatelessWidget {
               slivers: [
                 SliverAppBar(
                   automaticallyImplyLeading: false,
-                  titleSpacing: 10,
-                  expandedHeight: 100,
+                  expandedHeight: 60,
                   pinned: true,
                   backgroundColor: Colors.white,
                   title: Row(
@@ -32,12 +33,12 @@ class MahasiswaScreen extends StatelessWidget {
                                 top: 20.0,
                               ),
                               child: Text(
-                                "Dashboard",
+                                "Data Mahasiswa",
                                 textAlign: TextAlign.left,
                                 style: TextStyle(
                                   fontFamily:
                                       "Poppins", // Poppins semi-bold, 25
-                                  fontWeight: FontWeight.w600,
+                                  fontWeight: FontWeight.w700,
                                   fontSize: 22.0,
                                   color: Colors.black,
                                 ),
@@ -85,6 +86,124 @@ class MahasiswaScreen extends StatelessWidget {
                       ),
                     ],
                   ),
+                ),
+                SliverList(
+                  delegate: SliverChildListDelegate([
+                    SizedBox(height: 15),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 15.0),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                        ),
+                        height: 200,
+                        child: Text("chart"),
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 15.0),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Container(
+                              height: 150,
+                              decoration: BoxDecoration(
+                                color: Color.fromARGB(255, 241, 241, 241),
+                                borderRadius: BorderRadius.circular(10),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.grey.withOpacity(0.8),
+                                    spreadRadius: 1,
+                                    blurRadius: 5,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          SizedBox(width: 15),
+                          Expanded(
+                            child: Container(
+                              height: 150,
+                              decoration: BoxDecoration(
+                                color: Color.fromARGB(255, 241, 241, 241),
+                                borderRadius: BorderRadius.circular(10),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.grey.withOpacity(0.8),
+                                    spreadRadius: 1,
+                                    blurRadius: 5,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(
+                        bottom: 15,
+                        left: 15,
+                        right: 15,
+                      ),
+                      child: Column(
+                        children: [
+                          ListView.builder(
+                            shrinkWrap: true,
+                            itemCount: 3,
+                            itemBuilder: (BuildContext context, int index) {
+                              return Padding(
+                                padding: EdgeInsets.only(top: 15.0),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    Align(
+                                      alignment: Alignment.topLeft,
+                                      child: Padding(
+                                        padding: const EdgeInsets.only(
+                                          top: 10,
+                                          bottom: 15,
+                                        ),
+                                        child: Text(
+                                          "Lorem Ipsum",
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                      ),
+                                    ),
+                                    Container(
+                                      decoration: BoxDecoration(
+                                        color:
+                                            Color.fromARGB(255, 241, 241, 241),
+                                        borderRadius: BorderRadius.circular(10),
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: Colors.grey.withOpacity(0.8),
+                                            spreadRadius: 1,
+                                            blurRadius: 5,
+                                            // offset: Offset(0,7), // changes position of shadow
+                                          ),
+                                        ],
+                                      ),
+                                      height: 200,
+                                      child: Align(
+                                        alignment: Alignment.center,
+                                        child: Text(
+                                          "$index",
+                                          textAlign: TextAlign.center,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(width: 50),
+                  ]),
                 ),
               ],
             ),

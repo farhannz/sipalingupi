@@ -45,7 +45,7 @@ class _HomePageState extends State<HomePage> {
                                 style: TextStyle(
                                   fontFamily:
                                       "Poppins", // Poppins semi-bold, 25
-                                  fontWeight: FontWeight.w600,
+                                  fontWeight: FontWeight.w700,
                                   fontSize: 22.0,
                                   color: Colors.black,
                                 ),

@@ -6,6 +6,7 @@ class ProdiScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double screenSize = MediaQuery.of(context).size.width;
     return Scaffold(
       body: SafeArea(
         child: Stack(
@@ -84,6 +85,166 @@ class ProdiScreen extends StatelessWidget {
                       ),
                     ],
                   ),
+                ),
+                SliverList(
+                  delegate: SliverChildListDelegate([
+                    SizedBox(height: 15),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 15.0),
+                      child: Column(
+                        children: [
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Container(
+                                  height: 50,
+                                  width: (screenSize - 30) / 2,
+                                  decoration: BoxDecoration(
+                                    color: Colors.red,
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(width: 15),
+                              Expanded(
+                                child: Container(
+                                  height: 50,
+                                  width: (screenSize - 30) / 2,
+                                  decoration: BoxDecoration(
+                                    color: Colors.red,
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 15),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Container(
+                                  height: 50,
+                                  width: (screenSize - 30) / 2,
+                                  decoration: BoxDecoration(
+                                    color: Colors.red,
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(width: 15),
+                              Expanded(
+                                child: Container(
+                                  height: 50,
+                                  width: (screenSize - 30) / 2,
+                                  decoration: BoxDecoration(
+                                    color: Colors.red,
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(
+                        top: 30,
+                        left: 15,
+                        right: 15,
+                      ),
+                      child: Text(
+                        "Lorem Ipsum",
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(
+                        top: 20,
+                        left: 15,
+                        right: 15,
+                      ),
+                      child: Container(
+                        width: (screenSize - 30) / 2,
+                        height: 50,
+                        decoration: BoxDecoration(
+                          color: Color.fromARGB(255, 241, 241, 241),
+                          borderRadius: BorderRadius.circular(10),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(0.8),
+                              spreadRadius: 1,
+                              blurRadius: 5,
+                              // offset: Offset(0,7), // changes position of shadow
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 15.0),
+                      child: Container(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            ListView.builder(
+                              shrinkWrap: true,
+                              itemCount: 5,
+                              itemBuilder: (BuildContext context, int index) {
+                                return Padding(
+                                  padding: EdgeInsets.only(top: 15.0),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      Align(
+                                        alignment: Alignment.topLeft,
+                                        child: Padding(
+                                          padding: const EdgeInsets.only(
+                                            top: 10,
+                                            bottom: 15,
+                                          ),
+                                          child: Text(
+                                            "Lorem Ipsum",
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                        ),
+                                      ),
+                                      Container(
+                                        decoration: BoxDecoration(
+                                          color: Color.fromARGB(
+                                              255, 241, 241, 241),
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color:
+                                                  Colors.grey.withOpacity(0.8),
+                                              spreadRadius: 1,
+                                              blurRadius: 5,
+                                              // offset: Offset(0,7), // changes position of shadow
+                                            ),
+                                          ],
+                                        ),
+                                        height: 200,
+                                        child: Align(
+                                          alignment: Alignment.center,
+                                          child: Text(
+                                            "$index",
+                                            textAlign: TextAlign.center,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              },
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ]),
                 ),
               ],
             ),
