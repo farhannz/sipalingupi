@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sipaling_upi/components/floatingBar.dart';
+import 'package:sipaling_upi/screens/details/akreditasiScreen.dart';
+import 'package:sipaling_upi/screens/notifications.dart';
 
 class ProdiScreen extends StatelessWidget {
   const ProdiScreen({Key? key}) : super(key: key);
@@ -32,7 +34,7 @@ class ProdiScreen extends StatelessWidget {
                                 top: 20.0,
                               ),
                               child: Text(
-                                "Dashboard",
+                                "Data Prodi",
                                 textAlign: TextAlign.left,
                                 style: TextStyle(
                                   fontFamily:
@@ -96,24 +98,38 @@ class ProdiScreen extends StatelessWidget {
                           Row(
                             children: [
                               Expanded(
-                                child: Container(
-                                  height: 50,
-                                  width: (screenSize - 30) / 2,
-                                  decoration: BoxDecoration(
-                                    color: Colors.red,
-                                    borderRadius: BorderRadius.circular(10),
+                                child: ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    minimumSize: const Size.fromHeight(50),
+                                    primary: Color.fromARGB(255, 189, 35, 35),
                                   ),
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              AkreditasiScreen()),
+                                    );
+                                  },
+                                  child: const Text('Total'),
                                 ),
                               ),
                               SizedBox(width: 15),
                               Expanded(
-                                child: Container(
-                                  height: 50,
-                                  width: (screenSize - 30) / 2,
-                                  decoration: BoxDecoration(
-                                    color: Colors.red,
-                                    borderRadius: BorderRadius.circular(10),
+                                child: ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    minimumSize: const Size.fromHeight(50),
+                                    primary: Color.fromARGB(255, 189, 35, 35),
                                   ),
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              AkreditasiScreen()),
+                                    );
+                                  },
+                                  child: const Text('A'),
                                 ),
                               ),
                             ],
@@ -122,24 +138,38 @@ class ProdiScreen extends StatelessWidget {
                           Row(
                             children: [
                               Expanded(
-                                child: Container(
-                                  height: 50,
-                                  width: (screenSize - 30) / 2,
-                                  decoration: BoxDecoration(
-                                    color: Colors.red,
-                                    borderRadius: BorderRadius.circular(10),
+                                child: ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    minimumSize: const Size.fromHeight(50),
+                                    primary: Color.fromARGB(255, 189, 35, 35),
                                   ),
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              NotificationScreen()),
+                                    );
+                                  },
+                                  child: const Text('B'),
                                 ),
                               ),
                               SizedBox(width: 15),
                               Expanded(
-                                child: Container(
-                                  height: 50,
-                                  width: (screenSize - 30) / 2,
-                                  decoration: BoxDecoration(
-                                    color: Colors.red,
-                                    borderRadius: BorderRadius.circular(10),
+                                child: ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    minimumSize: const Size.fromHeight(50),
+                                    primary: Color.fromARGB(255, 189, 35, 35),
                                   ),
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              NotificationScreen()),
+                                    );
+                                  },
+                                  child: const Text('C'),
                                 ),
                               ),
                             ],

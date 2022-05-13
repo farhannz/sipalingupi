@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:sipaling_upi/components/floatingBar.dart';
-import 'package:sipaling_upi/data/mahasiswa/data.dart';
 
 class MahasiswaScreen extends StatelessWidget {
   const MahasiswaScreen({Key? key}) : super(key: key);

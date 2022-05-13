@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
-void main() => runApp(const NotificationScreen());
+void main() => runApp(const AkreditasiScreen());
 
-class NotificationScreen extends StatelessWidget {
-  const NotificationScreen({Key? key}) : super(key: key);
+class AkreditasiScreen extends StatelessWidget {
+  const AkreditasiScreen({Key? key}) : super(key: key);
 
   static const String _title = 'Flutter Code Sample';
 
@@ -71,7 +71,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                           left: 22.0,
                         ),
                         child: Text(
-                          "Notifications",
+                          "Akreditasi",
                           textAlign: TextAlign.right,
                           style: TextStyle(
                             fontFamily: "Poppins", // Poppins semi-bold, 25

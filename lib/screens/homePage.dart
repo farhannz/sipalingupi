@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sipaling_upi/components/floatingBar.dart';
+import 'package:sipaling_upi/screens/notifications.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
