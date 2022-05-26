@@ -15,6 +15,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     double screenSize = MediaQuery.of(context).size.width;
+    double screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
@@ -24,7 +25,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 width: screenSize,
                 child: Image.asset(
                   './assets/images/login-img.png',
-                  width: screenSize,
+                  height: .5 * screenHeight,
                   fit: BoxFit.fitHeight,
                 ),
               ),

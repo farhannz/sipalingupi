@@ -49,7 +49,10 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                     Align(
                       alignment: Alignment.topLeft,
                       child: ElevatedButton(
-                        onPressed: () => {},
+                        onPressed: () => {
+                          Navigator.of(context, rootNavigator: true)
+                              .pop(context)
+                        },
                         style: ElevatedButton.styleFrom(
                           primary: Colors.white,
                           minimumSize: Size(45, 45),

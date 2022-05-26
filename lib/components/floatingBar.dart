@@ -5,6 +5,8 @@ import 'package:sipaling_upi/screens/homePage.dart';
 import 'package:sipaling_upi/screens/mahasiswaScreen.dart';
 import 'package:sipaling_upi/screens/prodiScreen.dart';
 
+int _index = 0;
+
 class FloatingBar extends StatefulWidget {
   const FloatingBar({Key? key}) : super(key: key);
 
@@ -13,7 +15,6 @@ class FloatingBar extends StatefulWidget {
 }
 
 class _FloatingBarState extends State<FloatingBar> {
-  int _index = 0;
   Widget page = HomePage();
   @override
   Widget build(BuildContext context) {
