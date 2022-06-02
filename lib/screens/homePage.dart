@@ -17,84 +17,157 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     double screenSize = MediaQuery.of(context).size.width;
     return Scaffold(
+      appBar: AppBar(
+        title: RichText(
+          text: TextSpan(children: [
+            TextSpan(
+              text: 'Dashboard',
+              style: TextStyle(
+                fontFamily: "Poppins", // Poppins semi-bold, 25
+                fontWeight: FontWeight.w700,
+                fontSize: 22.0,
+                color: Colors.black,
+              ),
+            ),
+            TextSpan(text: "\n"),
+            TextSpan(
+              text: 'SIPALING UPI',
+              style: TextStyle(
+                fontFamily: "Poppins", // Poppins Light, 15
+                fontWeight: FontWeight.w300,
+                fontSize: 12.0,
+                color: Colors.black,
+              ),
+            )
+          ]),
+        ),
+        backgroundColor: Colors.white,
+        iconTheme: IconThemeData(color: Colors.red),
+        elevation: 0,
+      ),
+      endDrawer: Drawer(
+        // Add a ListView to the drawer. This ensures the user can scroll
+        // through the options in the drawer if there isn't enough vertical
+        // space to fit everything.
+        child: ListView(
+          // Important: Remove any padding from the ListView.
+          // padding: EdgeInsets.zero,
+          children: [
+            Row(
+              children: [
+                Icon(Icons.person),
+                Text(
+                  'User',
+                  style: TextStyle(
+                    fontFamily: "Poppins", // Poppins semi-bold, 25
+                    fontSize: 22.0,
+                    color: Colors.black,
+                  ),
+                ),
+              ],
+            ),
+            Row(
+              children: [
+                Icon(Icons.notifications_none_outlined),
+                Text('Notifications'),
+              ],
+            ),
+            Row(
+              children: [
+                Icon(Icons.bookmark_outline),
+                Text('Bookmark'),
+              ],
+            ),
+            Column(
+              children: [
+                Text("Dark Mode"),
+                Switch(
+                  value: true,
+                  onChanged: (value) {},
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
       body: SafeArea(
         child: Stack(
           children: [
             CustomScrollView(
               slivers: [
-                SliverAppBar(
-                  automaticallyImplyLeading: false,
-                  expandedHeight: 60,
-                  pinned: true,
-                  backgroundColor: Colors.white,
-                  title: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Align(
-                            alignment: Alignment.topLeft,
-                            child: Padding(
-                              padding: EdgeInsets.only(
-                                top: 20.0,
-                              ),
-                              child: Text(
-                                "Dashboard",
-                                textAlign: TextAlign.left,
-                                style: TextStyle(
-                                  fontFamily:
-                                      "Poppins", // Poppins semi-bold, 25
-                                  fontWeight: FontWeight.w700,
-                                  fontSize: 22.0,
-                                  color: Colors.black,
-                                ),
-                              ),
-                            ),
-                          ),
-                          Align(
-                            alignment: Alignment.bottomLeft,
-                            child: Padding(
-                              padding: EdgeInsets.only(
-                                bottom: 15.0,
-                              ),
-                              child: Text(
-                                "SIPALING-UPI",
-                                textAlign: TextAlign.left,
-                                style: TextStyle(
-                                  fontFamily: "Poppins", // Poppins Light, 15
-                                  fontWeight: FontWeight.w300,
-                                  fontSize: 12.0,
-                                  color: Colors.black,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      // Menu hamburger sebelah kanan
-                      Align(
-                        alignment: Alignment.topRight,
-                        child: ElevatedButton(
-                          onPressed: () => {},
-                          style: ElevatedButton.styleFrom(
-                            primary: Colors.white,
-                            minimumSize: Size(35, 35),
-                            shape: RoundedRectangleBorder(
-                                //to set border radius to button
-                                borderRadius: BorderRadius.circular(10)),
-                          ),
-                          child: Icon(
-                            Icons.menu,
-                            size: 40,
-                            color: Colors.red,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+                // SliverAppBar(
+                //   automaticallyImplyLeading: false,
+                //   expandedHeight: 60,
+                //   pinned: true,
+                //   backgroundColor: Colors.white,
+                //   title: Row(
+                //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                //     children: [
+                //       Column(
+                //         mainAxisAlignment: MainAxisAlignment.start,
+                //         crossAxisAlignment: CrossAxisAlignment.start,
+                //         children: [
+                //           Align(
+                //             alignment: Alignment.topLeft,
+                //             child: Padding(
+                //               padding: EdgeInsets.only(
+                //                 top: 20.0,
+                //               ),
+                //               child: Text(
+                //                 "Dashboard",
+                //                 textAlign: TextAlign.left,
+                //                 style: TextStyle(
+                //                   fontFamily:
+                //                       "Poppins", // Poppins semi-bold, 25
+                //                   fontWeight: FontWeight.w700,
+                //                   fontSize: 22.0,
+                //                   color: Colors.black,
+                //                 ),
+                //               ),
+                //             ),
+                //           ),
+                //           Align(
+                //             alignment: Alignment.bottomLeft,
+                //             child: Padding(
+                //               padding: EdgeInsets.only(
+                //                 bottom: 15.0,
+                //               ),
+                //               child: Text(
+                //                 "SIPALING-UPI",
+                //                 textAlign: TextAlign.left,
+                //                 style: TextStyle(
+                //                   fontFamily: "Poppins", // Poppins Light, 15
+                //                   fontWeight: FontWeight.w300,
+                //                   fontSize: 12.0,
+                //                   color: Colors.black,
+                //                 ),
+                //               ),
+                //             ),
+                //           ),
+                //         ],
+                //       ),
+                //       // Menu hamburger sebelah kanan
+                //       // Align(
+                //       //   alignment: Alignment.topRight,
+                //       //   child: ElevatedButton(
+                //       //     onPressed: () => {},
+                //       //     style: ElevatedButton.styleFrom(
+                //       //       primary: Colors.white,
+                //       //       minimumSize: Size(35, 35),
+                //       //       shape: RoundedRectangleBorder(
+                //       //           //to set border radius to button
+                //       //           borderRadius: BorderRadius.circular(10)),
+                //       //     ),
+                //       //     child: Icon(
+                //       //       Icons.menu,
+                //       //       size: 40,
+                //       //       color: Colors.red,
+                //       //     ),
+                //       //   ),
+                //       // ),
+                //     ],
+                //   ),
+                // ),
                 SliverList(
                   delegate: SliverChildListDelegate([
                     Padding(
