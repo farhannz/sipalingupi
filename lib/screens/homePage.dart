@@ -46,6 +46,7 @@ class _HomePageState extends State<HomePage> {
         elevation: 0,
       ),
       endDrawer: Drawer(
+        backgroundColor: Colors.white,
         // Add a ListView to the drawer. This ensures the user can scroll
         // through the options in the drawer if there isn't enough vertical
         // space to fit everything.
@@ -53,40 +54,52 @@ class _HomePageState extends State<HomePage> {
           // Important: Remove any padding from the ListView.
           // padding: EdgeInsets.zero,
           children: [
-            Row(
-              children: [
-                Icon(Icons.person),
-                Text(
-                  'User',
+            ListTile(
+              leading: Icon(Icons.person),
+              title: Text(
+                'User',
+                style: TextStyle(
+                  fontFamily: "Poppins", // Poppins semi-bold, 25
+                  fontSize: 22.0,
+                  color: Colors.black,
+                ),
+              ),
+            ),
+            ListTile(
+              leading: Icon(Icons.notifications_none_outlined),
+              title: Text(
+                'Notifications',
+                style: TextStyle(
+                  fontFamily: "Poppins", // Poppins semi-bold, 25
+                  fontSize: 22.0,
+                  color: Colors.black,
+                ),
+              ),
+            ),
+            ListTile(
+              leading: Icon(Icons.bookmark_outline),
+              title: Text(
+                'Bookmark',
+                style: TextStyle(
+                  fontFamily: "Poppins", // Poppins semi-bold, 25
+                  fontSize: 22.0,
+                  color: Colors.black,
+                ),
+              ),
+            ),
+            ListTile(
+                title: Text(
+                  "Dark Mode",
                   style: TextStyle(
                     fontFamily: "Poppins", // Poppins semi-bold, 25
                     fontSize: 22.0,
                     color: Colors.black,
                   ),
                 ),
-              ],
-            ),
-            Row(
-              children: [
-                Icon(Icons.notifications_none_outlined),
-                Text('Notifications'),
-              ],
-            ),
-            Row(
-              children: [
-                Icon(Icons.bookmark_outline),
-                Text('Bookmark'),
-              ],
-            ),
-            Column(
-              children: [
-                Text("Dark Mode"),
-                Switch(
-                  value: true,
+                trailing: Switch(
+                  value: false,
                   onChanged: (value) {},
-                ),
-              ],
-            ),
+                )),
           ],
         ),
       ),
