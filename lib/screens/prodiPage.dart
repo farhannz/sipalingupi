@@ -115,7 +115,7 @@ class Mahasiswa {
     i = 0;
 
     for (var key in tmp.keys) {
-      print(tmp[key]['jumlah']);
+      // print(tmp[key]['jumlah']);
       if (tmp[key] != null) {
         gender?.add(
           PieChartSectionData(
@@ -163,7 +163,7 @@ class Dosen {
     i = 0;
 
     for (var key in tmp.keys) {
-      print(tmp[key]['jumlah']);
+      // print(tmp[key]['jumlah']);
       if (tmp[key] != null) {
         gender?.add(
           PieChartSectionData(
@@ -197,7 +197,7 @@ class Dosen {
     i = 0;
 
     for (var key in tmp.keys) {
-      print(tmp[key]['jumlah']);
+      // print(tmp[key]['jumlah']);
       if (tmp[key] != null) {
         gelar?.add(
           PieChartSectionData(
@@ -303,11 +303,29 @@ class Prodi {
   }
 }
 
+class Notifications {
+  var data;
+  bool hasNotif = false;
+  Notifications(List<dynamic> json) {
+    for (var x in json) {
+      if (x['read'] == false) {
+        hasNotif = true;
+        break;
+      } else {
+        hasNotif = false;
+      }
+    }
+  }
+  factory Notifications.fromJson(List<dynamic> json) {
+    return Notifications(json);
+  }
+}
+
 class _ProdiPageState extends State<ProdiPage> {
   var textController = TextEditingController();
   String searchText = "";
   bool isDarkMode = false;
-
+  bool hasNotif = false;
   var apiPath = 'https://sipalingupi-api.herokuapp.com/prodis/';
 
   var prodi = 'Ilmu Komputer';
@@ -323,6 +341,7 @@ class _ProdiPageState extends State<ProdiPage> {
     futurePublikasi = fetchDataPublikasi();
     futureMahasiswa = fetchDataMahasiswa();
     futureDosen = fetchDataDosen();
+    futureNotifications = fetchDataNotifications();
   }
 
   late Future<Prodi> futureProdi;
@@ -395,6 +414,18 @@ class _ProdiPageState extends State<ProdiPage> {
     }
   }
 
+  late Future<Notifications> futureNotifications;
+  Future<Notifications> fetchDataNotifications() async {
+    final response = await http
+        .get(Uri.parse('https://sipalingupi-api.herokuapp.com/users/1/notifs'));
+    if (response.statusCode == 200) {
+      // debugPrint(response.body);
+      return Notifications.fromJson(jsonDecode(response.body));
+    } else {
+      throw Exception('Gagal fetch data');
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -404,6 +435,7 @@ class _ProdiPageState extends State<ProdiPage> {
     futurePublikasi = fetchDataPublikasi();
     futureMahasiswa = fetchDataMahasiswa();
     futureDosen = fetchDataDosen();
+    futureNotifications = fetchDataNotifications();
   }
 
   @override
@@ -459,16 +491,50 @@ class _ProdiPageState extends State<ProdiPage> {
                 ),
               ),
             ),
-            ListTile(
-              leading: Icon(Icons.notifications_none_outlined),
-              title: Text(
-                'Notifications',
-                style: TextStyle(
-                  fontFamily: "Poppins", // Poppins semi-bold, 25
-                  fontSize: 22.0,
-                  color: Colors.black,
-                ),
-              ),
+            FutureBuilder<Notifications>(
+              future: futureNotifications,
+              builder: (context, snapshot) {
+                return ListTile(
+                  leading: new Stack(children: <Widget>[
+                    new Icon(Icons.notifications_none_outlined),
+                    if (snapshot.data?.hasNotif == true)
+                      new Positioned(
+                        // draw a red marble
+                        top: 0.0,
+                        right: 0.0,
+                        child: new Icon(Icons.brightness_1,
+                            size: 8.0, color: Colors.redAccent),
+                      )
+                  ]),
+                  title: ElevatedButton(
+                    autofocus: true,
+                    onFocusChange: (val) {
+                      changeProdi(this.prodi);
+                    },
+                    child: Text(
+                      'Notifications',
+                      style: TextStyle(
+                        fontFamily: "Poppins", // Poppins semi-bold, 25
+                        fontSize: 22.0,
+                        color: Colors.black,
+                      ),
+                    ),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => NotificationScreen()),
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      alignment: Alignment.centerLeft,
+                      padding: EdgeInsets.only(left: 0),
+                      primary: Colors.transparent,
+                      shadowColor: Colors.transparent,
+                    ),
+                  ),
+                );
+              },
             ),
             ListTile(
               leading: Icon(Icons.bookmark_outline),
