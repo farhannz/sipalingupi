@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:floating_bottom_navigation_bar/floating_bottom_navigation_bar.dart';
-import 'package:sipaling_upi/screens/dosenScreen.dart';
+import 'package:sipaling_upi/screens/prodiPage.dart';
 import 'package:sipaling_upi/screens/homePage.dart';
 import 'package:sipaling_upi/screens/fakultasPage.dart';
 import 'package:sipaling_upi/screens/prodiScreen.dart';
@@ -34,7 +34,7 @@ class _FloatingBarState extends State<FloatingBar> {
             break;
           case 2:
             {
-              page = DosenScreen();
+              page = ProdiPage();
             }
             break;
           case 3:
