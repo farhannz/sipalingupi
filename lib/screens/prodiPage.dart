@@ -205,6 +205,7 @@ class _ProdiPageState extends State<ProdiPage> {
     futureProdi = fetchDataProdi();
     futureIndeksPrestasi = fetchDataIPK();
     futureKeketatan = fetchDataKeketatan();
+    futurePublikasi = fetchDataPublikasi();
   }
 
   late Future<Prodi> futureProdi;
@@ -405,6 +406,7 @@ class _ProdiPageState extends State<ProdiPage> {
                                         onChanged: (String? newValue) {
                                           setState(() {
                                             changeProdi(newValue);
+                                            print(this.prodi);
                                           });
                                         },
                                         items: snapshot.data?.data
