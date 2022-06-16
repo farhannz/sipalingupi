@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:sipaling_upi/components/floatingBar.dart';
 import 'package:sipaling_upi/screens/notifications.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
+import 'package:fl_chart/fl_chart.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:math';
@@ -21,41 +22,20 @@ class _IndeksPrestasi {
 }
 
 class IndeksPrestasi {
-  var data;
-
+  List<FlSpot>? isi = [];
+  int minYear = 99999;
   IndeksPrestasi(List<dynamic> json) {
-    List<_IndeksPrestasi> tmp = [];
     // int minYear = 9999999;
     // for (var x in json) {
     //   debugPrint(x['fakId']);
+    int i = 0;
     for (var y in json[0]['ipk']) {
       if (y != null) {
-        tmp.add(_IndeksPrestasi(new DateTime(y['tahun']), y['ipk']));
+        minYear = (minYear > y['tahun']) ? y['tahun'] : minYear;
+        isi?.add(FlSpot(y['tahun'].toDouble(), y['ipk']));
+        i++;
       }
     }
-    for (var x in tmp) {
-      debugPrint(x.tahun.toString());
-      debugPrint(x.ipk.toString());
-    }
-    data = charts.TimeSeriesChart(
-      [
-        charts.Series<_IndeksPrestasi, DateTime>(
-          id: 'Indeks Prestasi',
-          fillColorFn: (_, __) => charts.Color(r: 255, g: 204, b: 0),
-          colorFn: (_, __) => charts.Color(r: 189, g: 35, b: 35),
-          data: tmp,
-          domainFn: (_IndeksPrestasi ip, _) => ip.tahun,
-          measureFn: (_IndeksPrestasi ip, _) => ip.ipk,
-        )
-      ],
-      animate: true,
-      defaultRenderer: charts.LineRendererConfig(
-        radiusPx: 5,
-        strokeWidthPx: 3,
-        includePoints: true,
-        includeLine: true,
-      ),
-    );
     // }
   }
 
@@ -115,15 +95,72 @@ class Keketatan {
   }
 }
 
+class _Fakultas {
+  String id;
+  String nama;
+
+  _Fakultas(this.id, this.nama);
+}
+
+class Fakultas {
+  var data;
+
+  Fakultas(List<dynamic> json) {
+    List<_Fakultas> tmp = [];
+    data = json;
+    // int minYear = 9999999;
+    // for (var x in json) {
+    //   debugPrint(x['fakId']);
+    for (var y in json) {
+      if (y != null) {
+        tmp.add(_Fakultas(y['id'], y['nama']));
+      }
+    }
+    for (var x in tmp) {
+      debugPrint(x.id.toString());
+      debugPrint(x.nama.toString());
+    }
+  }
+
+  factory Fakultas.fromJson(List<dynamic> json) {
+    return Fakultas(json);
+  }
+}
+
 class _FakultasPageState extends State<FakultasPage> {
   var textController = TextEditingController();
   String searchText = "";
   bool isDarkMode = false;
 
-  var apiPath = 'https://sipalingupi-api.herokuapp.com/faks/FPMIPA/';
+  var apiPath = 'https://sipalingupi-api.herokuapp.com/faks/';
+
+  var fakultas = 'FPMIPA';
+
+  void changeFakultas(fakultas) {
+    setState(() {
+      this.fakultas = fakultas;
+    });
+
+    futureFakultas = fetchDataFakultas();
+    futureIndeksPrestasi = fetchDataIPK();
+    futureKeketatan = fetchDataKeketatan();
+  }
+
+  late Future<Fakultas> futureFakultas;
+  Future<Fakultas> fetchDataFakultas() async {
+    final response = await http.get(Uri.parse(apiPath));
+    if (response.statusCode == 200) {
+      debugPrint(response.body);
+      return Fakultas.fromJson(jsonDecode(response.body));
+    } else {
+      throw Exception('Gagal fetch data');
+    }
+  }
+
   late Future<IndeksPrestasi> futureIndeksPrestasi;
   Future<IndeksPrestasi> fetchDataIPK() async {
-    final response = await http.get(Uri.parse(apiPath + 'ipks'));
+    final response =
+        await http.get(Uri.parse(apiPath + this.fakultas + '/ipks'));
     if (response.statusCode == 200) {
       debugPrint(response.body);
       return IndeksPrestasi.fromJson(jsonDecode(response.body));
@@ -134,7 +171,8 @@ class _FakultasPageState extends State<FakultasPage> {
 
   late Future<Keketatan> futureKeketatan;
   Future<Keketatan> fetchDataKeketatan() async {
-    final response = await http.get(Uri.parse(apiPath + 'keketatans'));
+    final response =
+        await http.get(Uri.parse(apiPath + this.fakultas + '/keketatans'));
     if (response.statusCode == 200) {
       // debugPrint(response.body);
       return Keketatan.fromJson(jsonDecode(response.body));
@@ -146,6 +184,7 @@ class _FakultasPageState extends State<FakultasPage> {
   @override
   void initState() {
     super.initState();
+    futureFakultas = fetchDataFakultas();
     futureIndeksPrestasi = fetchDataIPK();
     futureKeketatan = fetchDataKeketatan();
   }
@@ -250,79 +289,6 @@ class _FakultasPageState extends State<FakultasPage> {
           children: [
             CustomScrollView(
               slivers: [
-                // SliverAppBar(
-                //   automaticallyImplyLeading: false,
-                //   expandedHeight: 60,
-                //   pinned: true,
-                //   backgroundColor: Colors.white,
-                //   title: Row(
-                //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                //     children: [
-                //       Column(
-                //         mainAxisAlignment: MainAxisAlignment.start,
-                //         crossAxisAlignment: CrossAxisAlignment.start,
-                //         children: [
-                //           Align(
-                //             alignment: Alignment.topLeft,
-                //             child: Padding(
-                //               padding: EdgeInsets.only(
-                //                 top: 20.0,
-                //               ),
-                //               child: Text(
-                //                 "Dashboard",
-                //                 textAlign: TextAlign.left,
-                //                 style: TextStyle(
-                //                   fontFamily:
-                //                       "Poppins", // Poppins semi-bold, 25
-                //                   fontWeight: FontWeight.w700,
-                //                   fontSize: 22.0,
-                //                   color: Colors.black,
-                //                 ),
-                //               ),
-                //             ),
-                //           ),
-                //           Align(
-                //             alignment: Alignment.bottomLeft,
-                //             child: Padding(
-                //               padding: EdgeInsets.only(
-                //                 bottom: 15.0,
-                //               ),
-                //               child: Text(
-                //                 "SIPALING-UPI",
-                //                 textAlign: TextAlign.left,
-                //                 style: TextStyle(
-                //                   fontFamily: "Poppins", // Poppins Light, 15
-                //                   fontWeight: FontWeight.w300,
-                //                   fontSize: 12.0,
-                //                   color: Colors.black,
-                //                 ),
-                //               ),
-                //             ),
-                //           ),
-                //         ],
-                //       ),
-                //       // Menu hamburger sebelah kanan
-                //       // Align(
-                //       //   alignment: Alignment.topRight,
-                //       //   child: ElevatedButton(
-                //       //     onPressed: () => {},
-                //       //     style: ElevatedButton.styleFrom(
-                //       //       primary: Colors.white,
-                //       //       minimumSize: Size(35, 35),
-                //       //       shape: RoundedRectangleBorder(
-                //       //           //to set border radius to button
-                //       //           borderRadius: BorderRadius.circular(10)),
-                //       //     ),
-                //       //     child: Icon(
-                //       //       Icons.menu,
-                //       //       size: 40,
-                //       //       color: Colors.red,
-                //       //     ),
-                //       //   ),
-                //       // ),
-                //     ],
-                //   ),
-                // ),
                 SliverList(
                   delegate: SliverChildListDelegate([
                     Padding(
@@ -342,33 +308,35 @@ class _FakultasPageState extends State<FakultasPage> {
                                 ),
                               ),
                             ),
-                            Padding(
-                              padding: EdgeInsets.only(
-                                top: 20,
-                                bottom: 20,
-                              ),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  ElevatedButton(
-                                    onPressed: () => {},
-                                    child: Text("Peringkat"),
-                                  ),
-                                  ElevatedButton(
-                                    onPressed: () => {},
-                                    child: Text("Akreditasi"),
-                                  ),
-                                  ElevatedButton(
-                                    onPressed: () => {},
-                                    child: Text("Prestasi"),
-                                  ),
-                                  ElevatedButton(
-                                    onPressed: () => {},
-                                    child: Text("Penelitian"),
-                                  ),
-                                ],
-                              ),
+                            FutureBuilder<Fakultas>(
+                              future: futureFakultas,
+                              builder: (context, snapshot) {
+                                if (snapshot.hasData) {
+                                  return Padding(
+                                    padding: EdgeInsets.only(
+                                      top: 20,
+                                      bottom: 20,
+                                    ),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: <Widget>[
+                                        for (var item in snapshot.data?.data)
+                                          ElevatedButton(
+                                            onPressed: () {
+                                              changeFakultas(item['id']);
+                                              print(this.fakultas);
+                                            },
+                                            child: Text(item['id']),
+                                          ),
+                                      ],
+                                    ),
+                                  );
+                                } else if (snapshot.hasError) {
+                                  return Text('${snapshot.error}');
+                                }
+                                return const CircularProgressIndicator();
+                              },
                             ),
                             FutureBuilder<IndeksPrestasi>(
                               future: futureIndeksPrestasi,
@@ -403,10 +371,82 @@ class _FakultasPageState extends State<FakultasPage> {
                                           ),
                                         ],
                                       ),
-                                      height: 200,
+                                      height: 250,
                                       child: Align(
                                         alignment: Alignment.center,
-                                        child: snapshot.data?.data,
+                                        child: Padding(
+                                            padding: EdgeInsets.symmetric(
+                                              vertical: 20,
+                                              horizontal: 20,
+                                            ),
+                                            child: LineChart(
+                                              LineChartData(
+                                                lineTouchData: LineTouchData(
+                                                  touchTooltipData:
+                                                      LineTouchTooltipData(
+                                                    tooltipBgColor:
+                                                        Colors.white,
+                                                  ),
+                                                  getTouchedSpotIndicator:
+                                                      (_, indicators) {
+                                                    return indicators.map(
+                                                      (int index) {
+                                                        return TouchedSpotIndicatorData(
+                                                          FlLine(
+                                                              strokeWidth: 0),
+                                                          FlDotData(show: true),
+                                                        );
+                                                      },
+                                                    ).toList();
+                                                  },
+                                                ),
+                                                borderData: FlBorderData(
+                                                    border: const Border(
+                                                        bottom: BorderSide(),
+                                                        left: BorderSide())),
+                                                gridData:
+                                                    FlGridData(show: false),
+                                                lineBarsData: [
+                                                  LineChartBarData(
+                                                    color: Color.fromARGB(
+                                                      255,
+                                                      189,
+                                                      35,
+                                                      35,
+                                                    ),
+                                                    spots: snapshot.data?.isi,
+                                                  ),
+                                                ],
+                                                titlesData: FlTitlesData(
+                                                  bottomTitles: AxisTitles(
+                                                    sideTitles: SideTitles(
+                                                      showTitles: true,
+                                                      interval: 1.0,
+                                                      getTitlesWidget:
+                                                          (value, meta) {
+                                                        return SideTitleWidget(
+                                                          axisSide:
+                                                              meta.axisSide,
+                                                          space: 2.5,
+                                                          child: Text(
+                                                              value.toString()),
+                                                        );
+                                                      },
+                                                    ),
+                                                  ),
+                                                  topTitles: AxisTitles(
+                                                    sideTitles: SideTitles(
+                                                      showTitles: false,
+                                                    ),
+                                                  ),
+                                                  rightTitles: AxisTitles(
+                                                    sideTitles: SideTitles(
+                                                      showTitles: false,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            )),
                                       ),
                                     ),
                                   ]);
