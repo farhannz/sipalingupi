@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:sipaling_upi/components/floatingBar.dart';
 import 'package:sipaling_upi/screens/notifications.dart';
-import 'package:charts_flutter/flutter.dart' as charts;
+// import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:http/http.dart' as http;
+import 'package:fl_chart/fl_chart.dart';
 import 'dart:convert';
 import 'dart:math';
 
@@ -20,42 +21,23 @@ class _IndeksPrestasi {
   _IndeksPrestasi(this.tahun, this.ipk);
 }
 
-class IndeksPrestasi {
-  var data;
+// double _selectedIpk = 0.0;
 
+class IndeksPrestasi {
+  List<FlSpot>? isi = [];
+  int minYear = 99999;
   IndeksPrestasi(List<dynamic> json) {
-    List<_IndeksPrestasi> tmp = [];
     // int minYear = 9999999;
     // for (var x in json) {
     //   debugPrint(x['fakId']);
+    int i = 0;
     for (var y in json[0]['ipk']) {
       if (y != null) {
-        tmp.add(_IndeksPrestasi(new DateTime(y['tahun']), y['ipk']));
+        minYear = (minYear > y['tahun']) ? y['tahun'] : minYear;
+        isi?.add(FlSpot(y['tahun'].toDouble(), y['ipk']));
+        i++;
       }
     }
-    for (var x in tmp) {
-      debugPrint(x.tahun.toString());
-      debugPrint(x.ipk.toString());
-    }
-    data = charts.TimeSeriesChart(
-      [
-        charts.Series<_IndeksPrestasi, DateTime>(
-          id: 'Indeks Prestasi',
-          fillColorFn: (_, __) => charts.Color(r: 255, g: 204, b: 0),
-          colorFn: (_, __) => charts.Color(r: 189, g: 35, b: 35),
-          data: tmp,
-          domainFn: (_IndeksPrestasi ip, _) => ip.tahun,
-          measureFn: (_IndeksPrestasi ip, _) => ip.ipk,
-        )
-      ],
-      animate: true,
-      defaultRenderer: charts.LineRendererConfig(
-        radiusPx: 5,
-        strokeWidthPx: 3,
-        includePoints: true,
-        includeLine: true,
-      ),
-    );
     // }
   }
 
@@ -64,65 +46,14 @@ class IndeksPrestasi {
   }
 }
 
-class _Keketatan {
-  DateTime tahun;
-  double keketatan;
-
-  _Keketatan(this.tahun, this.keketatan);
-}
-
-class Keketatan {
-  var data;
-
-  Keketatan(List<dynamic> json) {
-    List<_Keketatan> tmp = [];
-    // int minYear = 9999999;
-    // for (var x in json) {
-    //   debugPrint(x['fakId']);
-    for (var y in json[0]['keketatan']) {
-      if (y != null) {
-        tmp.add(_Keketatan(new DateTime(y['tahun']), y['keketatan']));
-      }
-    }
-    for (var x in tmp) {
-      debugPrint(x.tahun.toString());
-      debugPrint(x.keketatan.toString());
-    }
-    data = charts.TimeSeriesChart(
-      [
-        charts.Series<_Keketatan, DateTime>(
-          id: 'Keketatan',
-          fillColorFn: (_, __) => charts.Color(r: 255, g: 204, b: 0),
-          colorFn: (_, __) => charts.Color(r: 189, g: 35, b: 35),
-          data: tmp,
-          domainFn: (_Keketatan keketatan, _) => keketatan.tahun,
-          measureFn: (_Keketatan keketatan, _) => keketatan.keketatan,
-        )
-      ],
-      animate: true,
-      defaultRenderer: charts.LineRendererConfig(
-        radiusPx: 5,
-        strokeWidthPx: 3,
-        includePoints: true,
-        includeLine: true,
-      ),
-    );
-    // }
-  }
-
-  factory Keketatan.fromJson(List<dynamic> json) {
-    return Keketatan(json);
-  }
-}
-
 class _HomePageState extends State<HomePage> {
   var textController = TextEditingController();
   String searchText = "";
   bool isDarkMode = false;
-
+  double _selectedIpk = 0.0;
   var apiPath = 'https://sipalingupi-api.herokuapp.com/';
   late Future<IndeksPrestasi> futureIndeksPrestasi;
-  Future<IndeksPrestasi> fetchDataIPK() async {
+  Future<IndeksPrestasi> fetchData() async {
     final response = await http.get(Uri.parse(apiPath + 'ipks'));
     if (response.statusCode == 200) {
       // debugPrint(response.body);
@@ -132,22 +63,10 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  late Future<Keketatan> futureKeketatan;
-  Future<Keketatan> fetchDataKeketatan() async {
-    final response = await http.get(Uri.parse(apiPath + 'keketatans'));
-    if (response.statusCode == 200) {
-      // debugPrint(response.body);
-      return Keketatan.fromJson(jsonDecode(response.body));
-    } else {
-      throw Exception('Gagal fetch data');
-    }
-  }
-
   @override
   void initState() {
     super.initState();
-    futureIndeksPrestasi = fetchDataIPK();
-    futureKeketatan = fetchDataKeketatan();
+    futureIndeksPrestasi = fetchData();
   }
 
   @override
@@ -403,56 +322,82 @@ class _HomePageState extends State<HomePage> {
                                           ),
                                         ],
                                       ),
-                                      height: 200,
+                                      height: 250,
                                       child: Align(
                                         alignment: Alignment.center,
-                                        child: snapshot.data?.data,
-                                      ),
-                                    ),
-                                  ]);
-                                } else if (snapshot.hasError) {
-                                  return Text('${snapshot.error}');
-                                }
-                                return const CircularProgressIndicator();
-                              },
-                            ),
-                            FutureBuilder<Keketatan>(
-                              future: futureKeketatan,
-                              builder: (context, snapshot) {
-                                if (snapshot.hasData) {
-                                  return Column(children: [
-                                    Align(
-                                      alignment: Alignment.topLeft,
-                                      child: Padding(
-                                        padding: const EdgeInsets.only(
-                                          top: 10,
-                                          bottom: 15,
-                                        ),
-                                        child: Text(
-                                          "Keketatan",
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                      ),
-                                    ),
-                                    Container(
-                                      decoration: BoxDecoration(
-                                        color:
-                                            Color.fromARGB(255, 241, 241, 241),
-                                        borderRadius: BorderRadius.circular(10),
-                                        boxShadow: [
-                                          BoxShadow(
-                                            color: Colors.grey.withOpacity(0.8),
-                                            spreadRadius: 1,
-                                            blurRadius: 5,
-                                            // offset: Offset(0,7), // changes position of shadow
-                                          ),
-                                        ],
-                                      ),
-                                      height: 200,
-                                      child: Align(
-                                        alignment: Alignment.center,
-                                        child: snapshot.data?.data,
+                                        child: Padding(
+                                            padding: EdgeInsets.symmetric(
+                                              vertical: 20,
+                                              horizontal: 20,
+                                            ),
+                                            child: LineChart(
+                                              LineChartData(
+                                                lineTouchData: LineTouchData(
+                                                  touchTooltipData:
+                                                      LineTouchTooltipData(
+                                                    tooltipBgColor:
+                                                        Colors.white,
+                                                  ),
+                                                  getTouchedSpotIndicator:
+                                                      (_, indicators) {
+                                                    return indicators.map(
+                                                      (int index) {
+                                                        return TouchedSpotIndicatorData(
+                                                          FlLine(
+                                                              strokeWidth: 0),
+                                                          FlDotData(show: true),
+                                                        );
+                                                      },
+                                                    ).toList();
+                                                  },
+                                                ),
+                                                borderData: FlBorderData(
+                                                    border: const Border(
+                                                        bottom: BorderSide(),
+                                                        left: BorderSide())),
+                                                gridData:
+                                                    FlGridData(show: false),
+                                                lineBarsData: [
+                                                  LineChartBarData(
+                                                    color: Color.fromARGB(
+                                                      255,
+                                                      189,
+                                                      35,
+                                                      35,
+                                                    ),
+                                                    spots: snapshot.data?.isi,
+                                                  ),
+                                                ],
+                                                titlesData: FlTitlesData(
+                                                  bottomTitles: AxisTitles(
+                                                    sideTitles: SideTitles(
+                                                      showTitles: true,
+                                                      interval: 1.0,
+                                                      getTitlesWidget:
+                                                          (value, meta) {
+                                                        return SideTitleWidget(
+                                                          axisSide:
+                                                              meta.axisSide,
+                                                          space: 2.5,
+                                                          child: Text(
+                                                              value.toString()),
+                                                        );
+                                                      },
+                                                    ),
+                                                  ),
+                                                  topTitles: AxisTitles(
+                                                    sideTitles: SideTitles(
+                                                      showTitles: false,
+                                                    ),
+                                                  ),
+                                                  rightTitles: AxisTitles(
+                                                    sideTitles: SideTitles(
+                                                      showTitles: false,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            )),
                                       ),
                                     ),
                                   ]);
