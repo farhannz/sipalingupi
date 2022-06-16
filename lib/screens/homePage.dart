@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:sipaling_upi/components/floatingBar.dart';
 import 'package:sipaling_upi/screens/notifications.dart';
+import 'package:charts_flutter/flutter.dart' as charts;
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'dart:math';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -9,10 +13,80 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
+class _IndeksPrestasi {
+  DateTime tahun;
+  double ipk;
+
+  _IndeksPrestasi(this.tahun, this.ipk);
+}
+
+class IndeksPrestasi {
+  var data;
+
+  IndeksPrestasi(List<dynamic> json) {
+    List<_IndeksPrestasi> tmp = [];
+    // int minYear = 9999999;
+    // for (var x in json) {
+    //   debugPrint(x['fakId']);
+    for (var y in json[0]['ipk']) {
+      if (y != null) {
+        tmp.add(_IndeksPrestasi(new DateTime(y['tahun']), y['ipk']));
+      }
+    }
+    for (var x in tmp) {
+      debugPrint(x.tahun.toString());
+      debugPrint(x.ipk.toString());
+    }
+    data = charts.TimeSeriesChart(
+      [
+        charts.Series<_IndeksPrestasi, DateTime>(
+          id: 'Indeks Prestasi',
+          fillColorFn: (_, __) => charts.Color(r: 255, g: 204, b: 0),
+          colorFn: (_, __) => charts.Color(r: 189, g: 35, b: 35),
+          data: tmp,
+          domainFn: (_IndeksPrestasi ip, _) => ip.tahun,
+          measureFn: (_IndeksPrestasi ip, _) => ip.ipk,
+        )
+      ],
+      animate: true,
+      defaultRenderer: charts.LineRendererConfig(
+        radiusPx: 5,
+        strokeWidthPx: 3,
+        includePoints: true,
+        includeLine: true,
+      ),
+    );
+    // }
+  }
+
+  factory IndeksPrestasi.fromJson(List<dynamic> json) {
+    return IndeksPrestasi(json);
+  }
+}
+
 class _HomePageState extends State<HomePage> {
   var textController = TextEditingController();
   String searchText = "";
   bool isDarkMode = false;
+
+  var apiPath = 'https://sipalingupi-api.herokuapp.com/';
+  late Future<IndeksPrestasi> futureIndeksPrestasi;
+  Future<IndeksPrestasi> fetchData() async {
+    final response = await http.get(Uri.parse(apiPath + 'ipks'));
+    if (response.statusCode == 200) {
+      // debugPrint(response.body);
+      return IndeksPrestasi.fromJson(jsonDecode(response.body));
+    } else {
+      throw Exception('Gagal fetch data');
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    futureIndeksPrestasi = fetchData();
+  }
+
   @override
   Widget build(BuildContext context) {
     double screenSize = MediaQuery.of(context).size.width;
@@ -206,7 +280,10 @@ class _HomePageState extends State<HomePage> {
                               ),
                             ),
                             Padding(
-                              padding: EdgeInsets.only(top: 20),
+                              padding: EdgeInsets.only(
+                                top: 20,
+                                bottom: 20,
+                              ),
                               child: Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
@@ -229,6 +306,52 @@ class _HomePageState extends State<HomePage> {
                                   ),
                                 ],
                               ),
+                            ),
+                            FutureBuilder<IndeksPrestasi>(
+                              future: futureIndeksPrestasi,
+                              builder: (context, snapshot) {
+                                if (snapshot.hasData) {
+                                  return Column(children: [
+                                    Align(
+                                      alignment: Alignment.topLeft,
+                                      child: Padding(
+                                        padding: const EdgeInsets.only(
+                                          top: 10,
+                                          bottom: 15,
+                                        ),
+                                        child: Text(
+                                          "Indeks Prestasi",
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                      ),
+                                    ),
+                                    Container(
+                                      decoration: BoxDecoration(
+                                        color:
+                                            Color.fromARGB(255, 241, 241, 241),
+                                        borderRadius: BorderRadius.circular(10),
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: Colors.grey.withOpacity(0.8),
+                                            spreadRadius: 1,
+                                            blurRadius: 5,
+                                            // offset: Offset(0,7), // changes position of shadow
+                                          ),
+                                        ],
+                                      ),
+                                      height: 200,
+                                      child: Align(
+                                        alignment: Alignment.center,
+                                        child: snapshot.data?.data,
+                                      ),
+                                    ),
+                                  ]);
+                                } else if (snapshot.hasError) {
+                                  return Text('${snapshot.error}');
+                                }
+                                return const CircularProgressIndicator();
+                              },
                             ),
                             ListView.builder(
                               controller: ScrollController(),
