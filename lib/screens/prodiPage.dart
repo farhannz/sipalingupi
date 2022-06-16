@@ -93,6 +93,7 @@ class Publikasi {
 
 class Mahasiswa {
   List<PieChartSectionData>? gender = [];
+  List<PieChartSectionData>? jalur = [];
   Mahasiswa(List<dynamic> json) {
     // int minYear = 9999999;
     // for (var x in json) {
@@ -131,6 +132,61 @@ class Mahasiswa {
       }
       i++;
     }
+
+    tmp = {};
+    for (var x in json) {
+      for (var z in x['jalur']) {
+        if (z != null) {
+          if (tmp[z['id']] != null) {
+            tmp[z['id']] = {"jumlah": z['jumlah'] + tmp[z['id']]['jumlah']};
+          } else {
+            tmp[z['id']] = {"jumlah": z['jumlah']};
+          }
+          totalData += z['jumlah'];
+        }
+      }
+    }
+    i = 0;
+
+    for (var key in tmp.keys) {
+      print(tmp[key]['jumlah']);
+      if (tmp[key] != null) {
+        jalur?.add(
+          PieChartSectionData(
+            color: _warna[i % tmp.keys.length],
+            value: tmp[key]['jumlah'],
+            radius: 80.0,
+            title: tmp[key]['jumlah'].toString(),
+            titleStyle: TextStyle(
+              color: Colors.white,
+            ),
+          ),
+        );
+      }
+      i++;
+    }
+    // for (var x in json) {
+    //   for (var y in x['gender']) {
+    //     if (y != null) {
+    //       if (tmp[y['id']] != null) {
+    //         tmp[y['id']] = {
+    //           "jumlah": y['jumlah'] + tmp[y['id']]['jumlah'],
+    //           "count": i
+    //         };
+    //       } else {
+    //         tmp[y['id']] = {"jumlah": y[''], "count": i};
+    //       }
+    //     }
+    //   }
+    //   i++;
+    // }
+    // for (var key in tmp.keys) {
+    //   tmp[key]['jumlah'] = tmp[key]['jumlah'] / tmp[key]['count'];
+    //   isi?.add(FlSpot(double.parse(key),
+    //       double.parse(tmp[key]['jumlah'].toStringAsFixed(2))));
+    // }
+    // print(tmp);
+    // }
   }
 
   factory Mahasiswa.fromJson(List<dynamic> json) {
@@ -534,32 +590,36 @@ class _ProdiPageState extends State<ProdiPage> {
                                         top: 20,
                                         bottom: 20,
                                       ),
-                                      child: DropdownButton<String>(
-                                        value: this.prodi,
-                                        icon: const Icon(Icons.arrow_drop_down,
-                                            color: Colors.red),
-                                        elevation: 16,
-                                        style: const TextStyle(
-                                          color: Colors.red,
+                                      child: Container(
+                                        width: screenSize - 40,
+                                        child: DropdownButton<String>(
+                                          value: this.prodi,
+                                          icon: const Icon(
+                                              Icons.arrow_drop_down,
+                                              color: Colors.red),
+                                          elevation: 16,
+                                          style: const TextStyle(
+                                            color: Colors.red,
+                                          ),
+                                          underline: Container(
+                                            height: 2,
+                                            color: Colors.red,
+                                          ),
+                                          onChanged: (String? newValue) {
+                                            setState(() {
+                                              changeProdi(newValue);
+                                              print(this.prodi);
+                                            });
+                                          },
+                                          items: snapshot.data?.data
+                                              .map<DropdownMenuItem<String>>(
+                                                  (var value) {
+                                            return DropdownMenuItem<String>(
+                                              value: value['id'],
+                                              child: Text(value['id']),
+                                            );
+                                          }).toList(),
                                         ),
-                                        underline: Container(
-                                          height: 2,
-                                          color: Colors.red,
-                                        ),
-                                        onChanged: (String? newValue) {
-                                          setState(() {
-                                            changeProdi(newValue);
-                                            print(this.prodi);
-                                          });
-                                        },
-                                        items: snapshot.data?.data
-                                            .map<DropdownMenuItem<String>>(
-                                                (var value) {
-                                          return DropdownMenuItem<String>(
-                                            value: value['id'],
-                                            child: Text(value['id']),
-                                          );
-                                        }).toList(),
                                       ));
                                 } else if (snapshot.hasError) {
                                   return Text('${snapshot.error}');
@@ -730,24 +790,165 @@ class _ProdiPageState extends State<ProdiPage> {
                                                   ),
                                                   SizedBox(width: 15),
                                                   Expanded(
-                                                    child: Container(
-                                                      height: 300,
-                                                      decoration: BoxDecoration(
-                                                        color: Color.fromARGB(
-                                                            255, 241, 241, 241),
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(10),
-                                                        boxShadow: [
-                                                          BoxShadow(
-                                                            color: Colors.grey
-                                                                .withOpacity(
-                                                                    0.8),
-                                                            spreadRadius: 1,
-                                                            blurRadius: 5,
+                                                    child: Column(
+                                                      children: [
+                                                        Container(
+                                                          padding:
+                                                              EdgeInsets.only(
+                                                                  left: 16),
+                                                          child: Column(
+                                                            children: [
+                                                              Text(
+                                                                'Gelar Pendidikan',
+                                                                style: TextStyle(
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold),
+                                                              ),
+                                                              AspectRatio(
+                                                                aspectRatio:
+                                                                    1.0,
+                                                                child: PieChart(
+                                                                  PieChartData(
+                                                                    sectionsSpace:
+                                                                        2.0,
+                                                                    sections:
+                                                                        snapshot
+                                                                            .data
+                                                                            ?.jalur,
+                                                                    centerSpaceRadius:
+                                                                        0,
+                                                                  ),
+                                                                  swapAnimationCurve:
+                                                                      Curves
+                                                                          .linear,
+                                                                  swapAnimationDuration:
+                                                                      Duration(
+                                                                          milliseconds:
+                                                                              150),
+                                                                ),
+                                                              ),
+                                                              Row(
+                                                                children: <
+                                                                    Widget>[
+                                                                  Container(
+                                                                    width: 14,
+                                                                    height: 14,
+                                                                    decoration:
+                                                                        BoxDecoration(
+                                                                      shape: BoxShape
+                                                                          .rectangle,
+                                                                      color:
+                                                                          _warna[
+                                                                              2],
+                                                                    ),
+                                                                  ),
+                                                                  const SizedBox(
+                                                                    width: 4,
+                                                                  ),
+                                                                  Text(
+                                                                    'S1',
+                                                                    style: TextStyle(
+                                                                        fontSize:
+                                                                            14,
+                                                                        fontWeight:
+                                                                            FontWeight
+                                                                                .bold,
+                                                                        color: _warna[
+                                                                            2]),
+                                                                  )
+                                                                ],
+                                                              ),
+                                                              Row(
+                                                                children: <
+                                                                    Widget>[
+                                                                  Container(
+                                                                    width: 14,
+                                                                    height: 14,
+                                                                    decoration:
+                                                                        BoxDecoration(
+                                                                      shape: BoxShape
+                                                                          .rectangle,
+                                                                      color:
+                                                                          _warna[
+                                                                              0],
+                                                                    ),
+                                                                  ),
+                                                                  const SizedBox(
+                                                                    width: 4,
+                                                                  ),
+                                                                  Text(
+                                                                    'S2',
+                                                                    style: TextStyle(
+                                                                        fontSize:
+                                                                            14,
+                                                                        fontWeight:
+                                                                            FontWeight
+                                                                                .bold,
+                                                                        color: _warna[
+                                                                            2]),
+                                                                  )
+                                                                ],
+                                                              ),
+                                                              Row(
+                                                                children: <
+                                                                    Widget>[
+                                                                  Container(
+                                                                    width: 14,
+                                                                    height: 14,
+                                                                    decoration:
+                                                                        BoxDecoration(
+                                                                      shape: BoxShape
+                                                                          .rectangle,
+                                                                      color:
+                                                                          _warna[
+                                                                              1],
+                                                                    ),
+                                                                  ),
+                                                                  const SizedBox(
+                                                                    width: 4,
+                                                                  ),
+                                                                  Text(
+                                                                    'S3',
+                                                                    style: TextStyle(
+                                                                        fontSize:
+                                                                            14,
+                                                                        fontWeight:
+                                                                            FontWeight
+                                                                                .bold,
+                                                                        color: _warna[
+                                                                            2]),
+                                                                  )
+                                                                ],
+                                                              ),
+                                                            ],
                                                           ),
-                                                        ],
-                                                      ),
+                                                          height: 300,
+                                                          decoration:
+                                                              BoxDecoration(
+                                                            color:
+                                                                Color.fromARGB(
+                                                                    255,
+                                                                    241,
+                                                                    241,
+                                                                    241),
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        10),
+                                                            boxShadow: [
+                                                              BoxShadow(
+                                                                color: Colors
+                                                                    .grey
+                                                                    .withOpacity(
+                                                                        0.8),
+                                                                spreadRadius: 1,
+                                                                blurRadius: 5,
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      ],
                                                     ),
                                                   ),
                                                 ],
