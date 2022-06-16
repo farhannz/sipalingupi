@@ -7,6 +7,12 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:math';
 
+var _warna = [
+  Color.fromARGB(255, 189, 35, 35),
+  Color.fromARGB(255, 255, 204, 0),
+  Colors.black
+];
+
 class ProdiPage extends StatefulWidget {
   const ProdiPage({Key? key}) : super(key: key);
 
@@ -44,6 +50,61 @@ class IndeksPrestasi {
   }
 }
 
+class Publikasi {
+  List<BarChartGroupData>? publikasi = [];
+  int minYear = 99999;
+
+  Publikasi(List<dynamic> json) {
+    Map<String, dynamic> tmp = Map<String, dynamic>();
+    for (var x in json) {
+      for (var y in x['publikasi']) {
+        if (y != null) {
+          if (tmp[y['tahun'].toString()] != null) {
+            tmp[y['tahun'].toString()] = {
+              "jumlah": y['jumlah'] + tmp[y['jumlah'].toString()]['jumlah'],
+            };
+          } else {
+            tmp[y['tahun'].toString()] = {"jumlah": y['jumlah']};
+          }
+        }
+      }
+    }
+    // print(tmp);
+    int i = 0;
+    for (var key in tmp.keys) {
+      publikasi?.add(
+        BarChartGroupData(
+          x: int.parse(key),
+          barRods: [
+            BarChartRodData(
+              color: _warna[0],
+              toY: tmp[key]['jumlah'],
+            ),
+          ],
+        ),
+      );
+    }
+
+    // int minYear = 9999999;
+    // for (var x in json) {
+    //   debugPrint(x['fakId']);
+
+    // int i = 0;
+    // for (var y in json[0]['ipk']) {
+    //   if (y != null) {
+    //     minYear = (minYear > y['tahun']) ? y['tahun'] : minYear;
+    //     isi?.add(FlSpot(y['tahun'].toDouble(), y['ipk']));
+    //     i++;
+    //   }
+    // }
+    // }
+  }
+
+  factory Publikasi.fromJson(List<dynamic> json) {
+    return Publikasi(json);
+  }
+}
+
 class _Keketatan {
   DateTime tahun;
   double keketatan;
@@ -64,10 +125,10 @@ class Keketatan {
         tmp.add(_Keketatan(new DateTime(y['tahun']), y['keketatan']));
       }
     }
-    for (var x in tmp) {
-      debugPrint(x.tahun.toString());
-      debugPrint(x.keketatan.toString());
-    }
+    // for (var x in tmp) {
+    //   debugPrint(x.tahun.toString());
+    //   debugPrint(x.keketatan.toString());
+    // }
     data = charts.TimeSeriesChart(
       [
         charts.Series<_Keketatan, DateTime>(
@@ -116,10 +177,10 @@ class Prodi {
         tmp.add(_Prodi(y['id'], y['fakId']));
       }
     }
-    for (var x in tmp) {
-      debugPrint(x.id.toString());
-      debugPrint(x.fakId.toString());
-    }
+    // for (var x in tmp) {
+    //   debugPrint(x.id.toString());
+    //   debugPrint(x.fakId.toString());
+    // }
   }
 
   factory Prodi.fromJson(List<dynamic> json) {
@@ -150,7 +211,7 @@ class _ProdiPageState extends State<ProdiPage> {
   Future<Prodi> fetchDataProdi() async {
     final response = await http.get(Uri.parse(apiPath));
     if (response.statusCode == 200) {
-      debugPrint(response.body);
+      // debugPrint(response.body);
       return Prodi.fromJson(jsonDecode(response.body));
     } else {
       throw Exception('Gagal fetch data');
@@ -161,7 +222,7 @@ class _ProdiPageState extends State<ProdiPage> {
   Future<IndeksPrestasi> fetchDataIPK() async {
     final response = await http.get(Uri.parse(apiPath + this.prodi + '/ipks'));
     if (response.statusCode == 200) {
-      debugPrint(response.body);
+      // debugPrint(response.body);
       return IndeksPrestasi.fromJson(jsonDecode(response.body));
     } else {
       throw Exception('Gagal fetch data');
@@ -180,12 +241,25 @@ class _ProdiPageState extends State<ProdiPage> {
     }
   }
 
+  late Future<Publikasi> futurePublikasi;
+  Future<Publikasi> fetchDataPublikasi() async {
+    final response =
+        await http.get(Uri.parse(apiPath + this.prodi + '/publikasis'));
+    if (response.statusCode == 200) {
+      // debugPrint(response.body);
+      return Publikasi.fromJson(jsonDecode(response.body));
+    } else {
+      throw Exception('Gagal fetch data');
+    }
+  }
+
   @override
   void initState() {
     super.initState();
     futureProdi = fetchDataProdi();
     futureIndeksPrestasi = fetchDataIPK();
     futureKeketatan = fetchDataKeketatan();
+    futurePublikasi = fetchDataPublikasi();
   }
 
   @override
@@ -457,6 +531,96 @@ class _ProdiPageState extends State<ProdiPage> {
                                                 ),
                                               ),
                                             )),
+                                      ),
+                                    ),
+                                  ]);
+                                } else if (snapshot.hasError) {
+                                  return Text('${snapshot.error}');
+                                }
+                                return const CircularProgressIndicator();
+                              },
+                            ),
+                            FutureBuilder<Publikasi>(
+                              future: futurePublikasi,
+                              builder: (context, snapshot) {
+                                if (snapshot.hasData) {
+                                  return Column(children: [
+                                    Align(
+                                      alignment: Alignment.topLeft,
+                                      child: Padding(
+                                        padding: const EdgeInsets.only(
+                                          top: 10,
+                                          bottom: 15,
+                                        ),
+                                        child: Text(
+                                          "Jumlah Publikasi",
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                      ),
+                                    ),
+                                    Container(
+                                      decoration: BoxDecoration(
+                                        color:
+                                            Color.fromARGB(255, 241, 241, 241),
+                                        borderRadius: BorderRadius.circular(10),
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: Colors.grey.withOpacity(0.8),
+                                            spreadRadius: 1,
+                                            blurRadius: 5,
+                                            // offset: Offset(0,7), // changes position of shadow
+                                          ),
+                                        ],
+                                      ),
+                                      height: 250,
+                                      child: Align(
+                                        alignment: Alignment.center,
+                                        child: Padding(
+                                          padding: EdgeInsets.symmetric(
+                                            vertical: 20,
+                                            horizontal: 20,
+                                          ),
+                                          child: BarChart(
+                                            BarChartData(
+                                              barTouchData: BarTouchData(
+                                                touchTooltipData:
+                                                    BarTouchTooltipData(
+                                                        tooltipBgColor:
+                                                            Colors.white),
+                                              ),
+                                              barGroups:
+                                                  snapshot.data?.publikasi,
+                                              titlesData: FlTitlesData(
+                                                bottomTitles: AxisTitles(
+                                                  sideTitles: SideTitles(
+                                                    showTitles: true,
+                                                    interval: 1.0,
+                                                    getTitlesWidget:
+                                                        (value, meta) {
+                                                      return SideTitleWidget(
+                                                        axisSide: meta.axisSide,
+                                                        space: 2.5,
+                                                        child: Text(
+                                                            value.toString()),
+                                                      );
+                                                    },
+                                                  ),
+                                                ),
+                                                topTitles: AxisTitles(
+                                                  sideTitles: SideTitles(
+                                                    showTitles: false,
+                                                  ),
+                                                ),
+                                                rightTitles: AxisTitles(
+                                                  sideTitles: SideTitles(
+                                                    showTitles: false,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
                                       ),
                                     ),
                                   ]);
