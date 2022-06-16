@@ -51,7 +51,7 @@ class IndeksPrestasi {
       isi?.add(FlSpot(
           double.parse(key), double.parse(tmp[key]['ipk'].toStringAsFixed(2))));
     }
-    print(tmp);
+    // print(tmp);
     // }
   }
 
@@ -316,7 +316,7 @@ class _HomePageState extends State<HomePage> {
                                           bottom: 15,
                                         ),
                                         child: Text(
-                                          "Indeks Prestasi",
+                                          "Indeks Prestasi - Universita",
                                           style: TextStyle(
                                               fontWeight: FontWeight.bold),
                                         ),
@@ -339,79 +339,79 @@ class _HomePageState extends State<HomePage> {
                                       height: 250,
                                       child: Align(
                                         alignment: Alignment.center,
-                                        child: Padding(
-                                            padding: EdgeInsets.symmetric(
-                                              vertical: 20,
-                                              horizontal: 20,
-                                            ),
-                                            child: LineChart(
-                                              LineChartData(
-                                                lineTouchData: LineTouchData(
-                                                  touchTooltipData:
-                                                      LineTouchTooltipData(
-                                                    tooltipBgColor:
-                                                        Colors.white,
-                                                  ),
-                                                  getTouchedSpotIndicator:
-                                                      (_, indicators) {
-                                                    return indicators.map(
-                                                      (int index) {
-                                                        return TouchedSpotIndicatorData(
-                                                          FlLine(
-                                                              strokeWidth: 0),
-                                                          FlDotData(show: true),
-                                                        );
-                                                      },
-                                                    ).toList();
-                                                  },
+                                        child: (Padding(
+                                          padding: EdgeInsets.symmetric(
+                                            vertical: 20,
+                                            horizontal: 20,
+                                          ),
+                                          child: LineChart(
+                                            LineChartData(
+                                              lineTouchData: LineTouchData(
+                                                touchTooltipData:
+                                                    LineTouchTooltipData(
+                                                  tooltipBgColor: Colors.white,
                                                 ),
-                                                borderData: FlBorderData(
-                                                    border: const Border(
-                                                        bottom: BorderSide(),
-                                                        left: BorderSide())),
-                                                gridData:
-                                                    FlGridData(show: false),
-                                                lineBarsData: [
-                                                  LineChartBarData(
-                                                    color: Color.fromARGB(
-                                                      255,
-                                                      189,
-                                                      35,
-                                                      35,
-                                                    ),
-                                                    spots: snapshot.data?.isi,
+                                                getTouchedSpotIndicator:
+                                                    (_, indicators) {
+                                                  return indicators.map(
+                                                    (int index) {
+                                                      return TouchedSpotIndicatorData(
+                                                        FlLine(strokeWidth: 0),
+                                                        FlDotData(show: true),
+                                                      );
+                                                    },
+                                                  ).toList();
+                                                },
+                                              ),
+                                              borderData: FlBorderData(
+                                                  border: const Border(
+                                                      bottom: BorderSide(),
+                                                      left: BorderSide())),
+                                              gridData: FlGridData(show: false),
+                                              lineBarsData: [
+                                                LineChartBarData(
+                                                  color: Color.fromARGB(
+                                                    255,
+                                                    189,
+                                                    35,
+                                                    35,
                                                   ),
-                                                ],
-                                                titlesData: FlTitlesData(
-                                                  bottomTitles: AxisTitles(
-                                                    sideTitles: SideTitles(
-                                                      showTitles: true,
-                                                      interval: 1.0,
-                                                      getTitlesWidget:
-                                                          (value, meta) {
-                                                        return SideTitleWidget(
-                                                          axisSide:
-                                                              meta.axisSide,
-                                                          space: 2.5,
-                                                          child: Text(
-                                                              value.toString()),
-                                                        );
-                                                      },
-                                                    ),
+                                                  spots: snapshot.data?.isi,
+                                                ),
+                                              ],
+                                              titlesData: FlTitlesData(
+                                                bottomTitles: AxisTitles(
+                                                  sideTitles: SideTitles(
+                                                    showTitles: true,
+                                                    interval: 1.0,
+                                                    getTitlesWidget:
+                                                        (value, meta) {
+                                                      return SideTitleWidget(
+                                                        axisSide: meta.axisSide,
+                                                        space: 2.5,
+                                                        child: Text(
+                                                            value.toString()),
+                                                      );
+                                                    },
                                                   ),
-                                                  topTitles: AxisTitles(
-                                                    sideTitles: SideTitles(
-                                                      showTitles: false,
-                                                    ),
+                                                ),
+                                                topTitles: AxisTitles(
+                                                  sideTitles: SideTitles(
+                                                    showTitles: false,
                                                   ),
-                                                  rightTitles: AxisTitles(
-                                                    sideTitles: SideTitles(
-                                                      showTitles: false,
-                                                    ),
+                                                ),
+                                                rightTitles: AxisTitles(
+                                                  sideTitles: SideTitles(
+                                                    showTitles: false,
                                                   ),
                                                 ),
                                               ),
-                                            )),
+                                            ),
+                                            swapAnimationCurve: Curves.linear,
+                                            swapAnimationDuration:
+                                                Duration(milliseconds: 150),
+                                          ),
+                                        )),
                                       ),
                                     ),
                                   ]);

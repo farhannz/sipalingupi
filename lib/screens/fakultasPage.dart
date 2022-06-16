@@ -7,6 +7,12 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:math';
 
+var _warna = [
+  Color.fromARGB(255, 189, 35, 35),
+  Color.fromARGB(255, 255, 204, 0),
+  Colors.black
+];
+
 class FakultasPage extends StatefulWidget {
   const FakultasPage({Key? key}) : super(key: key);
 
@@ -64,10 +70,10 @@ class Keketatan {
         tmp.add(_Keketatan(new DateTime(y['tahun']), y['keketatan']));
       }
     }
-    for (var x in tmp) {
-      debugPrint(x.tahun.toString());
-      debugPrint(x.keketatan.toString());
-    }
+    // for (var x in tmp) {
+    //   debugPrint(x.tahun.toString());
+    //   debugPrint(x.keketatan.toString());
+    // }
     data = charts.TimeSeriesChart(
       [
         charts.Series<_Keketatan, DateTime>(
@@ -116,14 +122,83 @@ class Fakultas {
         tmp.add(_Fakultas(y['id'], y['nama']));
       }
     }
-    for (var x in tmp) {
-      debugPrint(x.id.toString());
-      debugPrint(x.nama.toString());
-    }
+    // for (var x in tmp) {
+    //   debugPrint(x.id.toString());
+    //   debugPrint(x.nama.toString());
+    // }
   }
 
   factory Fakultas.fromJson(List<dynamic> json) {
     return Fakultas(json);
+  }
+}
+
+class Mahasiswa {
+  List<PieChartSectionData>? gender = [];
+  Mahasiswa(List<dynamic> json) {
+    // int minYear = 9999999;
+    // for (var x in json) {
+    //   debugPrint(x['fakId']);
+    Map<String, dynamic> tmp = Map<String, dynamic>();
+    int i = 1;
+    num totalData = 0;
+    for (var x in json) {
+      for (var y in x['gender']) {
+        if (y != null) {
+          if (tmp[y['id']] != null) {
+            tmp[y['id']] = {"jumlah": y['jumlah'] + tmp[y['id']]['jumlah']};
+          } else {
+            tmp[y['id']] = {"jumlah": y['jumlah']};
+          }
+          totalData += y['jumlah'];
+        }
+      }
+    }
+    i = 0;
+
+    for (var key in tmp.keys) {
+      print(tmp[key]['jumlah']);
+      if (tmp[key] != null) {
+        gender?.add(
+          PieChartSectionData(
+            color: _warna[i % tmp.keys.length],
+            value: tmp[key]['jumlah'],
+            radius: 40.0,
+            title: tmp[key]['jumlah'].toString(),
+            titleStyle: TextStyle(
+              color: Colors.white,
+            ),
+          ),
+        );
+      }
+      i++;
+    }
+    // for (var x in json) {
+    //   for (var y in x['gender']) {
+    //     if (y != null) {
+    //       if (tmp[y['id']] != null) {
+    //         tmp[y['id']] = {
+    //           "jumlah": y['jumlah'] + tmp[y['id']]['jumlah'],
+    //           "count": i
+    //         };
+    //       } else {
+    //         tmp[y['id']] = {"jumlah": y[''], "count": i};
+    //       }
+    //     }
+    //   }
+    //   i++;
+    // }
+    // for (var key in tmp.keys) {
+    //   tmp[key]['jumlah'] = tmp[key]['jumlah'] / tmp[key]['count'];
+    //   isi?.add(FlSpot(double.parse(key),
+    //       double.parse(tmp[key]['jumlah'].toStringAsFixed(2))));
+    // }
+    // print(tmp);
+    // }
+  }
+
+  factory Mahasiswa.fromJson(List<dynamic> json) {
+    return Mahasiswa(json);
   }
 }
 
@@ -144,13 +219,14 @@ class _FakultasPageState extends State<FakultasPage> {
     futureFakultas = fetchDataFakultas();
     futureIndeksPrestasi = fetchDataIPK();
     futureKeketatan = fetchDataKeketatan();
+    futureMahasiswa = fetchDataMahasiswa();
   }
 
   late Future<Fakultas> futureFakultas;
   Future<Fakultas> fetchDataFakultas() async {
     final response = await http.get(Uri.parse(apiPath));
     if (response.statusCode == 200) {
-      debugPrint(response.body);
+      // debugPrint(response.body);
       return Fakultas.fromJson(jsonDecode(response.body));
     } else {
       throw Exception('Gagal fetch data');
@@ -162,7 +238,7 @@ class _FakultasPageState extends State<FakultasPage> {
     final response =
         await http.get(Uri.parse(apiPath + this.fakultas + '/ipks'));
     if (response.statusCode == 200) {
-      debugPrint(response.body);
+      // debugPrint(response.body);
       return IndeksPrestasi.fromJson(jsonDecode(response.body));
     } else {
       throw Exception('Gagal fetch data');
@@ -181,12 +257,25 @@ class _FakultasPageState extends State<FakultasPage> {
     }
   }
 
+  late Future<Mahasiswa> futureMahasiswa;
+  Future<Mahasiswa> fetchDataMahasiswa() async {
+    final response =
+        await http.get(Uri.parse(apiPath + this.fakultas + '/mahasiswas'));
+    if (response.statusCode == 200) {
+      // debugPrint(response.body);
+      return Mahasiswa.fromJson(jsonDecode(response.body));
+    } else {
+      throw Exception('Gagal fetch data');
+    }
+  }
+
   @override
   void initState() {
     super.initState();
     futureFakultas = fetchDataFakultas();
     futureIndeksPrestasi = fetchDataIPK();
     futureKeketatan = fetchDataKeketatan();
+    futureMahasiswa = fetchDataMahasiswa();
   }
 
   @override
@@ -343,6 +432,169 @@ class _FakultasPageState extends State<FakultasPage> {
                                           );
                                         }).toList(),
                                       ));
+                                } else if (snapshot.hasError) {
+                                  return Text('${snapshot.error}');
+                                }
+                                return const CircularProgressIndicator();
+                              },
+                            ),
+                            FutureBuilder<Mahasiswa>(
+                              future: futureMahasiswa,
+                              builder: (context, snapshot) {
+                                if (snapshot.hasData) {
+                                  return Column(children: [
+                                    Align(
+                                      alignment: Alignment.topLeft,
+                                      child: Padding(
+                                        padding: const EdgeInsets.only(
+                                          top: 10,
+                                          bottom: 15,
+                                        ),
+                                        child: Text(
+                                          "Data Mahasiswa",
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: 15.0),
+                                      child: Row(
+                                        children: [
+                                          Expanded(
+                                            child: Column(
+                                              children: [
+                                                Container(
+                                                  padding:
+                                                      EdgeInsets.only(left: 16),
+                                                  child: Column(
+                                                    children: [
+                                                      Text(
+                                                        'Jenis Kelamin',
+                                                        style: TextStyle(
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .bold),
+                                                      ),
+                                                      AspectRatio(
+                                                        aspectRatio: 1.0,
+                                                        child: PieChart(
+                                                          PieChartData(
+                                                            sectionsSpace: 2.0,
+                                                            sections: snapshot
+                                                                .data?.gender,
+                                                            centerSpaceRadius:
+                                                                48.0,
+                                                          ),
+                                                          swapAnimationCurve:
+                                                              Curves.linear,
+                                                          swapAnimationDuration:
+                                                              Duration(
+                                                                  milliseconds:
+                                                                      150),
+                                                        ),
+                                                      ),
+                                                      Row(
+                                                        children: <Widget>[
+                                                          Container(
+                                                            width: 14,
+                                                            height: 14,
+                                                            decoration:
+                                                                BoxDecoration(
+                                                              shape: BoxShape
+                                                                  .rectangle,
+                                                              color: _warna[0],
+                                                            ),
+                                                          ),
+                                                          const SizedBox(
+                                                            width: 4,
+                                                          ),
+                                                          Text(
+                                                            'Laki - Laki',
+                                                            style: TextStyle(
+                                                                fontSize: 14,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                                color:
+                                                                    _warna[2]),
+                                                          )
+                                                        ],
+                                                      ),
+                                                      Row(
+                                                        children: <Widget>[
+                                                          Container(
+                                                            width: 14,
+                                                            height: 14,
+                                                            decoration:
+                                                                BoxDecoration(
+                                                              shape: BoxShape
+                                                                  .rectangle,
+                                                              color: _warna[1],
+                                                            ),
+                                                          ),
+                                                          const SizedBox(
+                                                            width: 4,
+                                                          ),
+                                                          Text(
+                                                            'Perempuan',
+                                                            style: TextStyle(
+                                                                fontSize: 14,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                                color:
+                                                                    _warna[2]),
+                                                          )
+                                                        ],
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  height: 300,
+                                                  decoration: BoxDecoration(
+                                                    color: Color.fromARGB(
+                                                        255, 241, 241, 241),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10),
+                                                    boxShadow: [
+                                                      BoxShadow(
+                                                        color: Colors.grey
+                                                            .withOpacity(0.8),
+                                                        spreadRadius: 1,
+                                                        blurRadius: 5,
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          SizedBox(width: 15),
+                                          Expanded(
+                                            child: Container(
+                                              height: 300,
+                                              decoration: BoxDecoration(
+                                                color: Color.fromARGB(
+                                                    255, 241, 241, 241),
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                                boxShadow: [
+                                                  BoxShadow(
+                                                    color: Colors.grey
+                                                        .withOpacity(0.8),
+                                                    spreadRadius: 1,
+                                                    blurRadius: 5,
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ]);
                                 } else if (snapshot.hasError) {
                                   return Text('${snapshot.error}');
                                 }
