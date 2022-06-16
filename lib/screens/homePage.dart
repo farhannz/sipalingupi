@@ -64,6 +64,57 @@ class IndeksPrestasi {
   }
 }
 
+class _Keketatan {
+  DateTime tahun;
+  double keketatan;
+
+  _Keketatan(this.tahun, this.keketatan);
+}
+
+class Keketatan {
+  var data;
+
+  Keketatan(List<dynamic> json) {
+    List<_Keketatan> tmp = [];
+    // int minYear = 9999999;
+    // for (var x in json) {
+    //   debugPrint(x['fakId']);
+    for (var y in json[0]['keketatan']) {
+      if (y != null) {
+        tmp.add(_Keketatan(new DateTime(y['tahun']), y['keketatan']));
+      }
+    }
+    for (var x in tmp) {
+      debugPrint(x.tahun.toString());
+      debugPrint(x.keketatan.toString());
+    }
+    data = charts.TimeSeriesChart(
+      [
+        charts.Series<_Keketatan, DateTime>(
+          id: 'Keketatan',
+          fillColorFn: (_, __) => charts.Color(r: 255, g: 204, b: 0),
+          colorFn: (_, __) => charts.Color(r: 189, g: 35, b: 35),
+          data: tmp,
+          domainFn: (_Keketatan keketatan, _) => keketatan.tahun,
+          measureFn: (_Keketatan keketatan, _) => keketatan.keketatan,
+        )
+      ],
+      animate: true,
+      defaultRenderer: charts.LineRendererConfig(
+        radiusPx: 5,
+        strokeWidthPx: 3,
+        includePoints: true,
+        includeLine: true,
+      ),
+    );
+    // }
+  }
+
+  factory Keketatan.fromJson(List<dynamic> json) {
+    return Keketatan(json);
+  }
+}
+
 class _HomePageState extends State<HomePage> {
   var textController = TextEditingController();
   String searchText = "";
@@ -71,7 +122,7 @@ class _HomePageState extends State<HomePage> {
 
   var apiPath = 'https://sipalingupi-api.herokuapp.com/';
   late Future<IndeksPrestasi> futureIndeksPrestasi;
-  Future<IndeksPrestasi> fetchData() async {
+  Future<IndeksPrestasi> fetchDataIPK() async {
     final response = await http.get(Uri.parse(apiPath + 'ipks'));
     if (response.statusCode == 200) {
       // debugPrint(response.body);
@@ -81,10 +132,22 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  late Future<Keketatan> futureKeketatan;
+  Future<Keketatan> fetchDataKeketatan() async {
+    final response = await http.get(Uri.parse(apiPath + 'keketatans'));
+    if (response.statusCode == 200) {
+      // debugPrint(response.body);
+      return Keketatan.fromJson(jsonDecode(response.body));
+    } else {
+      throw Exception('Gagal fetch data');
+    }
+  }
+
   @override
   void initState() {
     super.initState();
-    futureIndeksPrestasi = fetchData();
+    futureIndeksPrestasi = fetchDataIPK();
+    futureKeketatan = fetchDataKeketatan();
   }
 
   @override
@@ -321,6 +384,52 @@ class _HomePageState extends State<HomePage> {
                                         ),
                                         child: Text(
                                           "Indeks Prestasi",
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                      ),
+                                    ),
+                                    Container(
+                                      decoration: BoxDecoration(
+                                        color:
+                                            Color.fromARGB(255, 241, 241, 241),
+                                        borderRadius: BorderRadius.circular(10),
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: Colors.grey.withOpacity(0.8),
+                                            spreadRadius: 1,
+                                            blurRadius: 5,
+                                            // offset: Offset(0,7), // changes position of shadow
+                                          ),
+                                        ],
+                                      ),
+                                      height: 200,
+                                      child: Align(
+                                        alignment: Alignment.center,
+                                        child: snapshot.data?.data,
+                                      ),
+                                    ),
+                                  ]);
+                                } else if (snapshot.hasError) {
+                                  return Text('${snapshot.error}');
+                                }
+                                return const CircularProgressIndicator();
+                              },
+                            ),
+                            FutureBuilder<Keketatan>(
+                              future: futureKeketatan,
+                              builder: (context, snapshot) {
+                                if (snapshot.hasData) {
+                                  return Column(children: [
+                                    Align(
+                                      alignment: Alignment.topLeft,
+                                      child: Padding(
+                                        padding: const EdgeInsets.only(
+                                          top: 10,
+                                          bottom: 15,
+                                        ),
+                                        child: Text(
+                                          "Keketatan",
                                           style: TextStyle(
                                               fontWeight: FontWeight.bold),
                                         ),
