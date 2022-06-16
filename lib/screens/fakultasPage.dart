@@ -55,22 +55,26 @@ class Publikasi {
   int minYear = 99999;
 
   Publikasi(List<dynamic> json) {
+    // print(json);
     Map<String, dynamic> tmp = Map<String, dynamic>();
+    int i = 1;
+    num totalData = 0;
     for (var x in json) {
       for (var y in x['publikasi']) {
         if (y != null) {
           if (tmp[y['tahun'].toString()] != null) {
             tmp[y['tahun'].toString()] = {
-              "jumlah": y['jumlah'] + tmp[y['jumlah'].toString()]['jumlah'],
+              "jumlah": y['jumlah'] + tmp[y['tahun'].toString()]['jumlah']
             };
           } else {
             tmp[y['tahun'].toString()] = {"jumlah": y['jumlah']};
           }
+          totalData += y['jumlah'];
         }
       }
     }
-    // print(tmp);
-    int i = 0;
+
+    print(tmp);
     for (var key in tmp.keys) {
       publikasi?.add(
         BarChartGroupData(
@@ -283,42 +287,41 @@ class _Keketatan {
   _Keketatan(this.tahun, this.keketatan);
 }
 
-class Keketatan {
-  var data;
+// double _selectedIpk = 0.0;
 
+class Keketatan {
+  List<FlSpot>? isi = [];
   Keketatan(List<dynamic> json) {
-    List<_Keketatan> tmp = [];
     // int minYear = 9999999;
     // for (var x in json) {
     //   debugPrint(x['fakId']);
-    for (var y in json[0]['keketatan']) {
-      if (y != null) {
-        tmp.add(_Keketatan(new DateTime(y['tahun']), y['keketatan']));
+    Map<String, dynamic> tmp = Map<String, dynamic>();
+    int i = 1;
+    for (var x in json) {
+      for (var y in x['keketatan']) {
+        if (y != null) {
+          if (tmp[y['tahun'].toString()] != null) {
+            tmp[y['tahun'].toString()] = {
+              "keketatan":
+                  y['keketatan'] + tmp[y['tahun'].toString()]['keketatan'],
+              "count": i
+            };
+          } else {
+            tmp[y['tahun'].toString()] = {
+              "keketatan": y['keketatan'],
+              "count": i
+            };
+          }
+        }
       }
+      i++;
     }
-    // for (var x in tmp) {
-    //   debugPrint(x.tahun.toString());
-    //   debugPrint(x.keketatan.toString());
-    // }
-    data = charts.TimeSeriesChart(
-      [
-        charts.Series<_Keketatan, DateTime>(
-          id: 'Keketatan',
-          fillColorFn: (_, __) => charts.Color(r: 255, g: 204, b: 0),
-          colorFn: (_, __) => charts.Color(r: 189, g: 35, b: 35),
-          data: tmp,
-          domainFn: (_Keketatan keketatan, _) => keketatan.tahun,
-          measureFn: (_Keketatan keketatan, _) => keketatan.keketatan,
-        )
-      ],
-      animate: true,
-      defaultRenderer: charts.LineRendererConfig(
-        radiusPx: 5,
-        strokeWidthPx: 3,
-        includePoints: true,
-        includeLine: true,
-      ),
-    );
+    for (var key in tmp.keys) {
+      tmp[key]['keketatan'] = tmp[key]['keketatan'] / tmp[key]['count'];
+      isi?.add(FlSpot(double.parse(key),
+          double.parse(tmp[key]['keketatan'].toStringAsFixed(2))));
+    }
+    // print(tmp);
     // }
   }
 
@@ -1471,7 +1474,7 @@ class _FakultasPageState extends State<FakultasPage> {
                                           bottom: 15,
                                         ),
                                         child: Text(
-                                          "Keketatan",
+                                          "Keketatan - Universitas",
                                           style: TextStyle(
                                               fontWeight: FontWeight.bold),
                                         ),
@@ -1491,10 +1494,82 @@ class _FakultasPageState extends State<FakultasPage> {
                                           ),
                                         ],
                                       ),
-                                      height: 200,
+                                      height: 250,
                                       child: Align(
                                         alignment: Alignment.center,
-                                        child: snapshot.data?.data,
+                                        child: (Padding(
+                                          padding: EdgeInsets.symmetric(
+                                            vertical: 20,
+                                            horizontal: 20,
+                                          ),
+                                          child: LineChart(
+                                            LineChartData(
+                                              lineTouchData: LineTouchData(
+                                                touchTooltipData:
+                                                    LineTouchTooltipData(
+                                                  tooltipBgColor: Colors.white,
+                                                ),
+                                                getTouchedSpotIndicator:
+                                                    (_, indicators) {
+                                                  return indicators.map(
+                                                    (int index) {
+                                                      return TouchedSpotIndicatorData(
+                                                        FlLine(strokeWidth: 0),
+                                                        FlDotData(show: true),
+                                                      );
+                                                    },
+                                                  ).toList();
+                                                },
+                                              ),
+                                              borderData: FlBorderData(
+                                                  border: const Border(
+                                                      bottom: BorderSide(),
+                                                      left: BorderSide())),
+                                              gridData: FlGridData(show: false),
+                                              lineBarsData: [
+                                                LineChartBarData(
+                                                  color: Color.fromARGB(
+                                                    255,
+                                                    189,
+                                                    35,
+                                                    35,
+                                                  ),
+                                                  spots: snapshot.data?.isi,
+                                                ),
+                                              ],
+                                              titlesData: FlTitlesData(
+                                                bottomTitles: AxisTitles(
+                                                  sideTitles: SideTitles(
+                                                    showTitles: true,
+                                                    interval: 1.0,
+                                                    getTitlesWidget:
+                                                        (value, meta) {
+                                                      return SideTitleWidget(
+                                                        axisSide: meta.axisSide,
+                                                        space: 2.5,
+                                                        child: Text(
+                                                            value.toString()),
+                                                      );
+                                                    },
+                                                  ),
+                                                ),
+                                                topTitles: AxisTitles(
+                                                  sideTitles: SideTitles(
+                                                    showTitles: false,
+                                                  ),
+                                                ),
+                                                rightTitles: AxisTitles(
+                                                  sideTitles: SideTitles(
+                                                    showTitles: false,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                            swapAnimationCurve: Curves.linear,
+                                            swapAnimationDuration:
+                                                Duration(milliseconds: 150),
+                                          ),
+                                        )),
                                       ),
                                     ),
                                   ]);
@@ -1502,60 +1577,6 @@ class _FakultasPageState extends State<FakultasPage> {
                                   return Text('${snapshot.error}');
                                 }
                                 return const CircularProgressIndicator();
-                              },
-                            ),
-                            ListView.builder(
-                              controller: ScrollController(),
-                              shrinkWrap: true,
-                              itemCount: 5,
-                              itemBuilder: (BuildContext context, int index) {
-                                return Padding(
-                                  padding: EdgeInsets.only(top: 15.0),
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      Align(
-                                        alignment: Alignment.topLeft,
-                                        child: Padding(
-                                          padding: const EdgeInsets.only(
-                                            top: 10,
-                                            bottom: 15,
-                                          ),
-                                          child: Text(
-                                            "Lorem Ipsum",
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                        ),
-                                      ),
-                                      Container(
-                                        decoration: BoxDecoration(
-                                          color: Color.fromARGB(
-                                              255, 241, 241, 241),
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                          boxShadow: [
-                                            BoxShadow(
-                                              color:
-                                                  Colors.grey.withOpacity(0.8),
-                                              spreadRadius: 1,
-                                              blurRadius: 5,
-                                              // offset: Offset(0,7), // changes position of shadow
-                                            ),
-                                          ],
-                                        ),
-                                        height: 200,
-                                        child: Align(
-                                          alignment: Alignment.center,
-                                          child: Text(
-                                            "$index",
-                                            textAlign: TextAlign.center,
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                );
                               },
                             ),
                           ],
