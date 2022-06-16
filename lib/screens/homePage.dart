@@ -25,19 +25,33 @@ class _IndeksPrestasi {
 
 class IndeksPrestasi {
   List<FlSpot>? isi = [];
-  int minYear = 99999;
   IndeksPrestasi(List<dynamic> json) {
     // int minYear = 9999999;
     // for (var x in json) {
     //   debugPrint(x['fakId']);
-    int i = 0;
-    for (var y in json[0]['ipk']) {
-      if (y != null) {
-        minYear = (minYear > y['tahun']) ? y['tahun'] : minYear;
-        isi?.add(FlSpot(y['tahun'].toDouble(), y['ipk']));
-        i++;
+    Map<String, dynamic> tmp = Map<String, dynamic>();
+    int i = 1;
+    for (var x in json) {
+      for (var y in x['ipk']) {
+        if (y != null) {
+          if (tmp[y['tahun'].toString()] != null) {
+            tmp[y['tahun'].toString()] = {
+              "ipk": y['ipk'] + tmp[y['tahun'].toString()]['ipk'],
+              "count": i
+            };
+          } else {
+            tmp[y['tahun'].toString()] = {"ipk": y['ipk'], "count": i};
+          }
+        }
       }
+      i++;
     }
+    for (var key in tmp.keys) {
+      tmp[key]['ipk'] = tmp[key]['ipk'] / tmp[key]['count'];
+      isi?.add(FlSpot(
+          double.parse(key), double.parse(tmp[key]['ipk'].toStringAsFixed(2))));
+    }
+    print(tmp);
     // }
   }
 
