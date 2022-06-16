@@ -12,7 +12,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   var textController = TextEditingController();
   String searchText = "";
-
+  bool isDarkMode = false;
   @override
   Widget build(BuildContext context) {
     double screenSize = MediaQuery.of(context).size.width;
@@ -51,6 +51,7 @@ class _HomePageState extends State<HomePage> {
         // through the options in the drawer if there isn't enough vertical
         // space to fit everything.
         child: ListView(
+          controller: ScrollController(),
           // Important: Remove any padding from the ListView.
           // padding: EdgeInsets.zero,
           children: [
@@ -97,8 +98,12 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
                 trailing: Switch(
-                  value: false,
-                  onChanged: (value) {},
+                  value: isDarkMode,
+                  onChanged: (value) {
+                    setState(() {
+                      isDarkMode = value;
+                    });
+                  },
                 )),
           ],
         ),
@@ -226,6 +231,7 @@ class _HomePageState extends State<HomePage> {
                               ),
                             ),
                             ListView.builder(
+                              controller: ScrollController(),
                               shrinkWrap: true,
                               itemCount: 5,
                               itemBuilder: (BuildContext context, int index) {
