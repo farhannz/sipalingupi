@@ -50,91 +50,54 @@ class IndeksPrestasi {
   }
 }
 
-class _Keketatan {
-  DateTime tahun;
-  double keketatan;
+class Publikasi {
+  List<BarChartGroupData>? publikasi = [];
+  int minYear = 99999;
 
-  _Keketatan(this.tahun, this.keketatan);
-}
-
-class Keketatan {
-  var data;
-
-  Keketatan(List<dynamic> json) {
-    List<_Keketatan> tmp = [];
-    // int minYear = 9999999;
-    // for (var x in json) {
-    //   debugPrint(x['fakId']);
-    for (var y in json[0]['keketatan']) {
-      if (y != null) {
-        tmp.add(_Keketatan(new DateTime(y['tahun']), y['keketatan']));
+  Publikasi(List<dynamic> json) {
+    // print(json);
+    Map<String, dynamic> tmp = Map<String, dynamic>();
+    int i = 1;
+    num totalData = 0;
+    for (var x in json) {
+      for (var y in x['publikasi']) {
+        if (y != null) {
+          if (tmp[y['tahun'].toString()] != null) {
+            tmp[y['tahun'].toString()] = {
+              "jumlah": y['jumlah'] + tmp[y['tahun'].toString()]['jumlah']
+            };
+          } else {
+            tmp[y['tahun'].toString()] = {"jumlah": y['jumlah']};
+          }
+          totalData += y['jumlah'];
+        }
       }
     }
-    // for (var x in tmp) {
-    //   debugPrint(x.tahun.toString());
-    //   debugPrint(x.keketatan.toString());
-    // }
-    data = charts.TimeSeriesChart(
-      [
-        charts.Series<_Keketatan, DateTime>(
-          id: 'Keketatan',
-          fillColorFn: (_, __) => charts.Color(r: 255, g: 204, b: 0),
-          colorFn: (_, __) => charts.Color(r: 189, g: 35, b: 35),
-          data: tmp,
-          domainFn: (_Keketatan keketatan, _) => keketatan.tahun,
-          measureFn: (_Keketatan keketatan, _) => keketatan.keketatan,
-        )
-      ],
-      animate: true,
-      defaultRenderer: charts.LineRendererConfig(
-        radiusPx: 5,
-        strokeWidthPx: 3,
-        includePoints: true,
-        includeLine: true,
-      ),
-    );
-    // }
-  }
 
-  factory Keketatan.fromJson(List<dynamic> json) {
-    return Keketatan(json);
-  }
-}
-
-class _Fakultas {
-  String id;
-  String nama;
-
-  _Fakultas(this.id, this.nama);
-}
-
-class Fakultas {
-  var data;
-
-  Fakultas(List<dynamic> json) {
-    List<_Fakultas> tmp = [];
-    data = json;
-    // int minYear = 9999999;
-    // for (var x in json) {
-    //   debugPrint(x['fakId']);
-    for (var y in json) {
-      if (y != null) {
-        tmp.add(_Fakultas(y['id'], y['nama']));
-      }
+    print(tmp);
+    for (var key in tmp.keys) {
+      publikasi?.add(
+        BarChartGroupData(
+          x: int.parse(key),
+          barRods: [
+            BarChartRodData(
+              color: _warna[0],
+              toY: tmp[key]['jumlah'],
+            ),
+          ],
+        ),
+      );
     }
-    // for (var x in tmp) {
-    //   debugPrint(x.id.toString());
-    //   debugPrint(x.nama.toString());
-    // }
   }
 
-  factory Fakultas.fromJson(List<dynamic> json) {
-    return Fakultas(json);
+  factory Publikasi.fromJson(List<dynamic> json) {
+    return Publikasi(json);
   }
 }
 
 class Mahasiswa {
   List<PieChartSectionData>? gender = [];
+  List<PieChartSectionData>? jalur = [];
   Mahasiswa(List<dynamic> json) {
     // int minYear = 9999999;
     // for (var x in json) {
@@ -173,6 +136,39 @@ class Mahasiswa {
       }
       i++;
     }
+
+    tmp = {};
+    for (var x in json) {
+      for (var z in x['jalur']) {
+        if (z != null) {
+          if (tmp[z['id']] != null) {
+            tmp[z['id']] = {"jumlah": z['jumlah'] + tmp[z['id']]['jumlah']};
+          } else {
+            tmp[z['id']] = {"jumlah": z['jumlah']};
+          }
+          totalData += z['jumlah'];
+        }
+      }
+    }
+    i = 0;
+
+    for (var key in tmp.keys) {
+      print(tmp[key]['jumlah']);
+      if (tmp[key] != null) {
+        jalur?.add(
+          PieChartSectionData(
+            color: _warna[i % tmp.keys.length],
+            value: tmp[key]['jumlah'],
+            radius: 80.0,
+            title: tmp[key]['jumlah'].toString(),
+            titleStyle: TextStyle(
+              color: Colors.white,
+            ),
+          ),
+        );
+      }
+      i++;
+    }
     // for (var x in json) {
     //   for (var y in x['gender']) {
     //     if (y != null) {
@@ -202,6 +198,170 @@ class Mahasiswa {
   }
 }
 
+class Dosen {
+  List<PieChartSectionData>? gender = [];
+  List<PieChartSectionData>? gelar = [];
+  Dosen(List<dynamic> json) {
+    // int minYear = 9999999;
+    // for (var x in json) {
+    //   debugPrint(x['fakId']);
+    Map<String, dynamic> tmp = Map<String, dynamic>();
+    int i = 1;
+    num totalData = 0;
+    for (var x in json) {
+      for (var y in x['gender']) {
+        if (y != null) {
+          if (tmp[y['id']] != null) {
+            tmp[y['id']] = {"jumlah": y['jumlah'] + tmp[y['id']]['jumlah']};
+          } else {
+            tmp[y['id']] = {"jumlah": y['jumlah']};
+          }
+          totalData += y['jumlah'];
+        }
+      }
+    }
+    i = 0;
+
+    for (var key in tmp.keys) {
+      print(tmp[key]['jumlah']);
+      if (tmp[key] != null) {
+        gender?.add(
+          PieChartSectionData(
+            color: _warna[i % tmp.keys.length],
+            value: tmp[key]['jumlah'],
+            radius: 40.0,
+            title: tmp[key]['jumlah'].toString(),
+            titleStyle: TextStyle(
+              color: Colors.white,
+            ),
+          ),
+        );
+      }
+      i++;
+    }
+    tmp = {};
+    for (var x in json) {
+      for (var y in x['pendidikan']) {
+        if (y != null) {
+          if (tmp[y['gelar']] != null) {
+            tmp[y['gelar']] = {
+              "jumlah": y['jumlah'] + tmp[y['gelar']]['jumlah']
+            };
+          } else {
+            tmp[y['gelar']] = {"jumlah": y['jumlah']};
+          }
+          totalData += y['jumlah'];
+        }
+      }
+    }
+    i = 0;
+
+    for (var key in tmp.keys) {
+      print(tmp[key]['jumlah']);
+      if (tmp[key] != null) {
+        gelar?.add(
+          PieChartSectionData(
+            color: _warna[i % tmp.keys.length],
+            value: tmp[key]['jumlah'],
+            radius: 88.0,
+            title: tmp[key]['jumlah'].toString(),
+            titleStyle: TextStyle(
+              color: Colors.white,
+            ),
+          ),
+        );
+      }
+      i++;
+    }
+  }
+
+  factory Dosen.fromJson(List<dynamic> json) {
+    return Dosen(json);
+  }
+}
+
+class _Keketatan {
+  DateTime tahun;
+  double keketatan;
+
+  _Keketatan(this.tahun, this.keketatan);
+}
+
+// double _selectedIpk = 0.0;
+
+class Keketatan {
+  List<FlSpot>? isi = [];
+  Keketatan(List<dynamic> json) {
+    // int minYear = 9999999;
+    // for (var x in json) {
+    //   debugPrint(x['fakId']);
+    Map<String, dynamic> tmp = Map<String, dynamic>();
+    int i = 1;
+    for (var x in json) {
+      for (var y in x['keketatan']) {
+        if (y != null) {
+          if (tmp[y['tahun'].toString()] != null) {
+            tmp[y['tahun'].toString()] = {
+              "keketatan":
+                  y['keketatan'] + tmp[y['tahun'].toString()]['keketatan'],
+              "count": i
+            };
+          } else {
+            tmp[y['tahun'].toString()] = {
+              "keketatan": y['keketatan'],
+              "count": i
+            };
+          }
+        }
+      }
+      i++;
+    }
+    for (var key in tmp.keys) {
+      tmp[key]['keketatan'] = tmp[key]['keketatan'] / tmp[key]['count'];
+      isi?.add(FlSpot(double.parse(key),
+          double.parse(tmp[key]['keketatan'].toStringAsFixed(2))));
+    }
+    // print(tmp);
+    // }
+  }
+
+  factory Keketatan.fromJson(List<dynamic> json) {
+    return Keketatan(json);
+  }
+}
+
+class _Fakultas {
+  String id;
+  String nama;
+
+  _Fakultas(this.id, this.nama);
+}
+
+class Fakultas {
+  var data;
+
+  Fakultas(List<dynamic> json) {
+    List<_Fakultas> tmp = [];
+    data = json;
+    // int minYear = 9999999;
+    // for (var x in json) {
+    //   debugPrint(x['fakId']);
+    for (var y in json) {
+      if (y != null) {
+        tmp.add(_Fakultas(y['id'], y['nama']));
+      }
+    }
+    // for (var x in tmp) {
+    //   debugPrint(x.id.toString());
+    //   debugPrint(x.fakId.toString());
+    // }
+  }
+
+  factory Fakultas.fromJson(List<dynamic> json) {
+    return Fakultas(json);
+  }
+}
+
 class _FakultasPageState extends State<FakultasPage> {
   var textController = TextEditingController();
   String searchText = "";
@@ -220,6 +380,8 @@ class _FakultasPageState extends State<FakultasPage> {
     futureIndeksPrestasi = fetchDataIPK();
     futureKeketatan = fetchDataKeketatan();
     futureMahasiswa = fetchDataMahasiswa();
+    futurePublikasi = fetchDataPublikasi();
+    futureDosen = fetchDataDosen();
   }
 
   late Future<Fakultas> futureFakultas;
@@ -257,6 +419,18 @@ class _FakultasPageState extends State<FakultasPage> {
     }
   }
 
+  late Future<Publikasi> futurePublikasi;
+  Future<Publikasi> fetchDataPublikasi() async {
+    final response =
+        await http.get(Uri.parse(apiPath + this.fakultas + '/publikasis'));
+    if (response.statusCode == 200) {
+      // debugPrint(response.body);
+      return Publikasi.fromJson(jsonDecode(response.body));
+    } else {
+      throw Exception('Gagal fetch data');
+    }
+  }
+
   late Future<Mahasiswa> futureMahasiswa;
   Future<Mahasiswa> fetchDataMahasiswa() async {
     final response =
@@ -269,6 +443,18 @@ class _FakultasPageState extends State<FakultasPage> {
     }
   }
 
+  late Future<Dosen> futureDosen;
+  Future<Dosen> fetchDataDosen() async {
+    final response =
+        await http.get(Uri.parse(apiPath + this.fakultas + '/dosens'));
+    if (response.statusCode == 200) {
+      // debugPrint(response.body);
+      return Dosen.fromJson(jsonDecode(response.body));
+    } else {
+      throw Exception('Gagal fetch data');
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -276,6 +462,8 @@ class _FakultasPageState extends State<FakultasPage> {
     futureIndeksPrestasi = fetchDataIPK();
     futureKeketatan = fetchDataKeketatan();
     futureMahasiswa = fetchDataMahasiswa();
+    futurePublikasi = fetchDataPublikasi();
+    futureDosen = fetchDataDosen();
   }
 
   @override
@@ -406,195 +594,36 @@ class _FakultasPageState extends State<FakultasPage> {
                                         top: 20,
                                         bottom: 20,
                                       ),
-                                      child: DropdownButton<String>(
-                                        value: this.fakultas,
-                                        icon: const Icon(Icons.arrow_drop_down,
-                                            color: Colors.red),
-                                        elevation: 16,
-                                        style: const TextStyle(
-                                          color: Colors.red,
+                                      child: Container(
+                                        width: screenSize - 40,
+                                        child: DropdownButton<String>(
+                                          value: this.fakultas,
+                                          icon: const Icon(
+                                              Icons.arrow_drop_down,
+                                              color: Colors.red),
+                                          elevation: 16,
+                                          style: const TextStyle(
+                                            color: Colors.red,
+                                          ),
+                                          underline: Container(
+                                            height: 2,
+                                            color: Colors.red,
+                                          ),
+                                          onChanged: (String? newValue) {
+                                            setState(() {
+                                              changeFakultas(newValue);
+                                            });
+                                          },
+                                          items: snapshot.data?.data
+                                              .map<DropdownMenuItem<String>>(
+                                                  (var value) {
+                                            return DropdownMenuItem<String>(
+                                              value: value['id'],
+                                              child: Text(value['id']),
+                                            );
+                                          }).toList(),
                                         ),
-                                        underline: Container(
-                                          height: 2,
-                                          color: Colors.red,
-                                        ),
-                                        onChanged: (String? newValue) {
-                                          setState(() {
-                                            changeFakultas(newValue);
-                                          });
-                                        },
-                                        items: snapshot.data?.data
-                                            .map<DropdownMenuItem<String>>(
-                                                (var value) {
-                                          return DropdownMenuItem<String>(
-                                            value: value['id'],
-                                            child: Text(value['id']),
-                                          );
-                                        }).toList(),
                                       ));
-                                } else if (snapshot.hasError) {
-                                  return Text('${snapshot.error}');
-                                }
-                                return const CircularProgressIndicator();
-                              },
-                            ),
-                            FutureBuilder<Mahasiswa>(
-                              future: futureMahasiswa,
-                              builder: (context, snapshot) {
-                                if (snapshot.hasData) {
-                                  return Column(children: [
-                                    Align(
-                                      alignment: Alignment.topLeft,
-                                      child: Padding(
-                                        padding: const EdgeInsets.only(
-                                          top: 10,
-                                          bottom: 15,
-                                        ),
-                                        child: Text(
-                                          "Data Mahasiswa",
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding: EdgeInsets.symmetric(
-                                          horizontal: 15.0),
-                                      child: Row(
-                                        children: [
-                                          Expanded(
-                                            child: Column(
-                                              children: [
-                                                Container(
-                                                  padding:
-                                                      EdgeInsets.only(left: 16),
-                                                  child: Column(
-                                                    children: [
-                                                      Text(
-                                                        'Jenis Kelamin',
-                                                        style: TextStyle(
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .bold),
-                                                      ),
-                                                      AspectRatio(
-                                                        aspectRatio: 1.0,
-                                                        child: PieChart(
-                                                          PieChartData(
-                                                            sectionsSpace: 2.0,
-                                                            sections: snapshot
-                                                                .data?.gender,
-                                                            centerSpaceRadius:
-                                                                48.0,
-                                                          ),
-                                                          swapAnimationCurve:
-                                                              Curves.linear,
-                                                          swapAnimationDuration:
-                                                              Duration(
-                                                                  milliseconds:
-                                                                      150),
-                                                        ),
-                                                      ),
-                                                      Row(
-                                                        children: <Widget>[
-                                                          Container(
-                                                            width: 14,
-                                                            height: 14,
-                                                            decoration:
-                                                                BoxDecoration(
-                                                              shape: BoxShape
-                                                                  .rectangle,
-                                                              color: _warna[0],
-                                                            ),
-                                                          ),
-                                                          const SizedBox(
-                                                            width: 4,
-                                                          ),
-                                                          Text(
-                                                            'Laki - Laki',
-                                                            style: TextStyle(
-                                                                fontSize: 14,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold,
-                                                                color:
-                                                                    _warna[2]),
-                                                          )
-                                                        ],
-                                                      ),
-                                                      Row(
-                                                        children: <Widget>[
-                                                          Container(
-                                                            width: 14,
-                                                            height: 14,
-                                                            decoration:
-                                                                BoxDecoration(
-                                                              shape: BoxShape
-                                                                  .rectangle,
-                                                              color: _warna[1],
-                                                            ),
-                                                          ),
-                                                          const SizedBox(
-                                                            width: 4,
-                                                          ),
-                                                          Text(
-                                                            'Perempuan',
-                                                            style: TextStyle(
-                                                                fontSize: 14,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold,
-                                                                color:
-                                                                    _warna[2]),
-                                                          )
-                                                        ],
-                                                      ),
-                                                    ],
-                                                  ),
-                                                  height: 300,
-                                                  decoration: BoxDecoration(
-                                                    color: Color.fromARGB(
-                                                        255, 241, 241, 241),
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            10),
-                                                    boxShadow: [
-                                                      BoxShadow(
-                                                        color: Colors.grey
-                                                            .withOpacity(0.8),
-                                                        spreadRadius: 1,
-                                                        blurRadius: 5,
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                          SizedBox(width: 15),
-                                          Expanded(
-                                            child: Container(
-                                              height: 300,
-                                              decoration: BoxDecoration(
-                                                color: Color.fromARGB(
-                                                    255, 241, 241, 241),
-                                                borderRadius:
-                                                    BorderRadius.circular(10),
-                                                boxShadow: [
-                                                  BoxShadow(
-                                                    color: Colors.grey
-                                                        .withOpacity(0.8),
-                                                    spreadRadius: 1,
-                                                    blurRadius: 5,
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ]);
                                 } else if (snapshot.hasError) {
                                   return Text('${snapshot.error}');
                                 }
@@ -606,6 +635,633 @@ class _FakultasPageState extends State<FakultasPage> {
                               builder: (context, snapshot) {
                                 if (snapshot.hasData) {
                                   return Column(children: [
+                                    FutureBuilder<Mahasiswa>(
+                                      future: futureMahasiswa,
+                                      builder: (context, snapshot) {
+                                        if (snapshot.hasData) {
+                                          return Column(children: [
+                                            Align(
+                                              alignment: Alignment.topLeft,
+                                              child: Padding(
+                                                padding: const EdgeInsets.only(
+                                                  top: 10,
+                                                  bottom: 15,
+                                                ),
+                                                child: Text(
+                                                  "Data Mahasiswa",
+                                                  style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
+                                              ),
+                                            ),
+                                            Padding(
+                                              padding: EdgeInsets.symmetric(
+                                                  horizontal: 15.0),
+                                              child: Row(
+                                                children: [
+                                                  Expanded(
+                                                    child: Column(
+                                                      children: [
+                                                        Container(
+                                                          padding:
+                                                              EdgeInsets.only(
+                                                                  left: 16),
+                                                          child: Column(
+                                                            children: [
+                                                              Text(
+                                                                'Jenis Kelamin',
+                                                                style: TextStyle(
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold),
+                                                              ),
+                                                              AspectRatio(
+                                                                aspectRatio:
+                                                                    1.0,
+                                                                child: PieChart(
+                                                                  PieChartData(
+                                                                    sectionsSpace:
+                                                                        2.0,
+                                                                    sections:
+                                                                        snapshot
+                                                                            .data
+                                                                            ?.gender,
+                                                                    centerSpaceRadius:
+                                                                        48.0,
+                                                                  ),
+                                                                  swapAnimationCurve:
+                                                                      Curves
+                                                                          .linear,
+                                                                  swapAnimationDuration:
+                                                                      Duration(
+                                                                          milliseconds:
+                                                                              150),
+                                                                ),
+                                                              ),
+                                                              Row(
+                                                                children: <
+                                                                    Widget>[
+                                                                  Container(
+                                                                    width: 14,
+                                                                    height: 14,
+                                                                    decoration:
+                                                                        BoxDecoration(
+                                                                      shape: BoxShape
+                                                                          .rectangle,
+                                                                      color:
+                                                                          _warna[
+                                                                              0],
+                                                                    ),
+                                                                  ),
+                                                                  const SizedBox(
+                                                                    width: 4,
+                                                                  ),
+                                                                  Text(
+                                                                    'Laki - Laki',
+                                                                    style: TextStyle(
+                                                                        fontSize:
+                                                                            14,
+                                                                        fontWeight:
+                                                                            FontWeight
+                                                                                .bold,
+                                                                        color: _warna[
+                                                                            2]),
+                                                                  )
+                                                                ],
+                                                              ),
+                                                              Row(
+                                                                children: <
+                                                                    Widget>[
+                                                                  Container(
+                                                                    width: 14,
+                                                                    height: 14,
+                                                                    decoration:
+                                                                        BoxDecoration(
+                                                                      shape: BoxShape
+                                                                          .rectangle,
+                                                                      color:
+                                                                          _warna[
+                                                                              1],
+                                                                    ),
+                                                                  ),
+                                                                  const SizedBox(
+                                                                    width: 4,
+                                                                  ),
+                                                                  Text(
+                                                                    'Perempuan',
+                                                                    style: TextStyle(
+                                                                        fontSize:
+                                                                            14,
+                                                                        fontWeight:
+                                                                            FontWeight
+                                                                                .bold,
+                                                                        color: _warna[
+                                                                            2]),
+                                                                  )
+                                                                ],
+                                                              ),
+                                                            ],
+                                                          ),
+                                                          height: 300,
+                                                          decoration:
+                                                              BoxDecoration(
+                                                            color:
+                                                                Color.fromARGB(
+                                                                    255,
+                                                                    241,
+                                                                    241,
+                                                                    241),
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        10),
+                                                            boxShadow: [
+                                                              BoxShadow(
+                                                                color: Colors
+                                                                    .grey
+                                                                    .withOpacity(
+                                                                        0.8),
+                                                                spreadRadius: 1,
+                                                                blurRadius: 5,
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                  SizedBox(width: 15),
+                                                  Expanded(
+                                                    child: Column(
+                                                      children: [
+                                                        Container(
+                                                          padding:
+                                                              EdgeInsets.only(
+                                                                  left: 16),
+                                                          child: Column(
+                                                            children: [
+                                                              Text(
+                                                                'Gelar Pendidikan',
+                                                                style: TextStyle(
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold),
+                                                              ),
+                                                              AspectRatio(
+                                                                aspectRatio:
+                                                                    1.0,
+                                                                child: PieChart(
+                                                                  PieChartData(
+                                                                    sectionsSpace:
+                                                                        2.0,
+                                                                    sections:
+                                                                        snapshot
+                                                                            .data
+                                                                            ?.jalur,
+                                                                    centerSpaceRadius:
+                                                                        0,
+                                                                  ),
+                                                                  swapAnimationCurve:
+                                                                      Curves
+                                                                          .linear,
+                                                                  swapAnimationDuration:
+                                                                      Duration(
+                                                                          milliseconds:
+                                                                              150),
+                                                                ),
+                                                              ),
+                                                              Row(
+                                                                children: <
+                                                                    Widget>[
+                                                                  Container(
+                                                                    width: 14,
+                                                                    height: 14,
+                                                                    decoration:
+                                                                        BoxDecoration(
+                                                                      shape: BoxShape
+                                                                          .rectangle,
+                                                                      color:
+                                                                          _warna[
+                                                                              2],
+                                                                    ),
+                                                                  ),
+                                                                  const SizedBox(
+                                                                    width: 4,
+                                                                  ),
+                                                                  Text(
+                                                                    'S1',
+                                                                    style: TextStyle(
+                                                                        fontSize:
+                                                                            14,
+                                                                        fontWeight:
+                                                                            FontWeight
+                                                                                .bold,
+                                                                        color: _warna[
+                                                                            2]),
+                                                                  )
+                                                                ],
+                                                              ),
+                                                              Row(
+                                                                children: <
+                                                                    Widget>[
+                                                                  Container(
+                                                                    width: 14,
+                                                                    height: 14,
+                                                                    decoration:
+                                                                        BoxDecoration(
+                                                                      shape: BoxShape
+                                                                          .rectangle,
+                                                                      color:
+                                                                          _warna[
+                                                                              0],
+                                                                    ),
+                                                                  ),
+                                                                  const SizedBox(
+                                                                    width: 4,
+                                                                  ),
+                                                                  Text(
+                                                                    'S2',
+                                                                    style: TextStyle(
+                                                                        fontSize:
+                                                                            14,
+                                                                        fontWeight:
+                                                                            FontWeight
+                                                                                .bold,
+                                                                        color: _warna[
+                                                                            2]),
+                                                                  )
+                                                                ],
+                                                              ),
+                                                              Row(
+                                                                children: <
+                                                                    Widget>[
+                                                                  Container(
+                                                                    width: 14,
+                                                                    height: 14,
+                                                                    decoration:
+                                                                        BoxDecoration(
+                                                                      shape: BoxShape
+                                                                          .rectangle,
+                                                                      color:
+                                                                          _warna[
+                                                                              1],
+                                                                    ),
+                                                                  ),
+                                                                  const SizedBox(
+                                                                    width: 4,
+                                                                  ),
+                                                                  Text(
+                                                                    'S3',
+                                                                    style: TextStyle(
+                                                                        fontSize:
+                                                                            14,
+                                                                        fontWeight:
+                                                                            FontWeight
+                                                                                .bold,
+                                                                        color: _warna[
+                                                                            2]),
+                                                                  )
+                                                                ],
+                                                              ),
+                                                            ],
+                                                          ),
+                                                          height: 300,
+                                                          decoration:
+                                                              BoxDecoration(
+                                                            color:
+                                                                Color.fromARGB(
+                                                                    255,
+                                                                    241,
+                                                                    241,
+                                                                    241),
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        10),
+                                                            boxShadow: [
+                                                              BoxShadow(
+                                                                color: Colors
+                                                                    .grey
+                                                                    .withOpacity(
+                                                                        0.8),
+                                                                spreadRadius: 1,
+                                                                blurRadius: 5,
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ]);
+                                        } else if (snapshot.hasError) {
+                                          return Text('${snapshot.error}');
+                                        }
+                                        return const CircularProgressIndicator();
+                                      },
+                                    ),
+                                    FutureBuilder<Dosen>(
+                                      future: futureDosen,
+                                      builder: (context, snapshot) {
+                                        if (snapshot.hasData) {
+                                          return Column(children: [
+                                            Align(
+                                              alignment: Alignment.topLeft,
+                                              child: Padding(
+                                                padding: const EdgeInsets.only(
+                                                  top: 10,
+                                                  bottom: 15,
+                                                ),
+                                                child: Text(
+                                                  "Data Dosen",
+                                                  style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
+                                              ),
+                                            ),
+                                            Padding(
+                                              padding: EdgeInsets.symmetric(
+                                                  horizontal: 15.0),
+                                              child: Row(
+                                                children: [
+                                                  Expanded(
+                                                    child: Column(
+                                                      children: [
+                                                        Container(
+                                                          padding:
+                                                              EdgeInsets.only(
+                                                                  left: 16),
+                                                          child: Column(
+                                                            children: [
+                                                              Text(
+                                                                'Jenis Kelamin',
+                                                                style: TextStyle(
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold),
+                                                              ),
+                                                              AspectRatio(
+                                                                aspectRatio:
+                                                                    1.0,
+                                                                child: PieChart(
+                                                                  PieChartData(
+                                                                    sectionsSpace:
+                                                                        2.0,
+                                                                    sections:
+                                                                        snapshot
+                                                                            .data
+                                                                            ?.gender,
+                                                                    centerSpaceRadius:
+                                                                        48.0,
+                                                                  ),
+                                                                  swapAnimationCurve:
+                                                                      Curves
+                                                                          .linear,
+                                                                  swapAnimationDuration:
+                                                                      Duration(
+                                                                          milliseconds:
+                                                                              150),
+                                                                ),
+                                                              ),
+                                                              Row(
+                                                                children: <
+                                                                    Widget>[
+                                                                  Container(
+                                                                    width: 14,
+                                                                    height: 14,
+                                                                    decoration:
+                                                                        BoxDecoration(
+                                                                      shape: BoxShape
+                                                                          .rectangle,
+                                                                      color:
+                                                                          _warna[
+                                                                              0],
+                                                                    ),
+                                                                  ),
+                                                                  const SizedBox(
+                                                                    width: 4,
+                                                                  ),
+                                                                  Text(
+                                                                    'Laki - Laki',
+                                                                    style: TextStyle(
+                                                                        fontSize:
+                                                                            14,
+                                                                        fontWeight:
+                                                                            FontWeight
+                                                                                .bold,
+                                                                        color: _warna[
+                                                                            2]),
+                                                                  )
+                                                                ],
+                                                              ),
+                                                              Row(
+                                                                children: <
+                                                                    Widget>[
+                                                                  Container(
+                                                                    width: 14,
+                                                                    height: 14,
+                                                                    decoration:
+                                                                        BoxDecoration(
+                                                                      shape: BoxShape
+                                                                          .rectangle,
+                                                                      color:
+                                                                          _warna[
+                                                                              1],
+                                                                    ),
+                                                                  ),
+                                                                  const SizedBox(
+                                                                    width: 4,
+                                                                  ),
+                                                                  Text(
+                                                                    'Perempuan',
+                                                                    style: TextStyle(
+                                                                        fontSize:
+                                                                            14,
+                                                                        fontWeight:
+                                                                            FontWeight
+                                                                                .bold,
+                                                                        color: _warna[
+                                                                            2]),
+                                                                  )
+                                                                ],
+                                                              ),
+                                                            ],
+                                                          ),
+                                                          height: 300,
+                                                          decoration:
+                                                              BoxDecoration(
+                                                            color:
+                                                                Color.fromARGB(
+                                                                    255,
+                                                                    241,
+                                                                    241,
+                                                                    241),
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        10),
+                                                            boxShadow: [
+                                                              BoxShadow(
+                                                                color: Colors
+                                                                    .grey
+                                                                    .withOpacity(
+                                                                        0.8),
+                                                                spreadRadius: 1,
+                                                                blurRadius: 5,
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                  SizedBox(width: 15),
+                                                  Expanded(
+                                                    child: Column(
+                                                      children: [
+                                                        Container(
+                                                          padding:
+                                                              EdgeInsets.only(
+                                                                  left: 16),
+                                                          child: Column(
+                                                            children: [
+                                                              Text(
+                                                                'Gelar Pendidikan',
+                                                                style: TextStyle(
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold),
+                                                              ),
+                                                              AspectRatio(
+                                                                aspectRatio:
+                                                                    1.0,
+                                                                child: PieChart(
+                                                                  PieChartData(
+                                                                    sectionsSpace:
+                                                                        2.0,
+                                                                    sections:
+                                                                        snapshot
+                                                                            .data
+                                                                            ?.gelar,
+                                                                    centerSpaceRadius:
+                                                                        0,
+                                                                  ),
+                                                                  swapAnimationCurve:
+                                                                      Curves
+                                                                          .linear,
+                                                                  swapAnimationDuration:
+                                                                      Duration(
+                                                                          milliseconds:
+                                                                              150),
+                                                                ),
+                                                              ),
+                                                              Row(
+                                                                children: <
+                                                                    Widget>[
+                                                                  Container(
+                                                                    width: 14,
+                                                                    height: 14,
+                                                                    decoration:
+                                                                        BoxDecoration(
+                                                                      shape: BoxShape
+                                                                          .rectangle,
+                                                                      color:
+                                                                          _warna[
+                                                                              0],
+                                                                    ),
+                                                                  ),
+                                                                  const SizedBox(
+                                                                    width: 4,
+                                                                  ),
+                                                                  Text(
+                                                                    'S2',
+                                                                    style: TextStyle(
+                                                                        fontSize:
+                                                                            14,
+                                                                        fontWeight:
+                                                                            FontWeight
+                                                                                .bold,
+                                                                        color: _warna[
+                                                                            2]),
+                                                                  )
+                                                                ],
+                                                              ),
+                                                              Row(
+                                                                children: <
+                                                                    Widget>[
+                                                                  Container(
+                                                                    width: 14,
+                                                                    height: 14,
+                                                                    decoration:
+                                                                        BoxDecoration(
+                                                                      shape: BoxShape
+                                                                          .rectangle,
+                                                                      color:
+                                                                          _warna[
+                                                                              1],
+                                                                    ),
+                                                                  ),
+                                                                  const SizedBox(
+                                                                    width: 4,
+                                                                  ),
+                                                                  Text(
+                                                                    'S3',
+                                                                    style: TextStyle(
+                                                                        fontSize:
+                                                                            14,
+                                                                        fontWeight:
+                                                                            FontWeight
+                                                                                .bold,
+                                                                        color: _warna[
+                                                                            2]),
+                                                                  )
+                                                                ],
+                                                              ),
+                                                            ],
+                                                          ),
+                                                          height: 300,
+                                                          decoration:
+                                                              BoxDecoration(
+                                                            color:
+                                                                Color.fromARGB(
+                                                                    255,
+                                                                    241,
+                                                                    241,
+                                                                    241),
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        10),
+                                                            boxShadow: [
+                                                              BoxShadow(
+                                                                color: Colors
+                                                                    .grey
+                                                                    .withOpacity(
+                                                                        0.8),
+                                                                spreadRadius: 1,
+                                                                blurRadius: 5,
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ]);
+                                        } else if (snapshot.hasError) {
+                                          return Text('${snapshot.error}');
+                                        }
+                                        return const CircularProgressIndicator();
+                                      },
+                                    ),
                                     Align(
                                       alignment: Alignment.topLeft,
                                       child: Padding(
@@ -638,10 +1294,8 @@ class _FakultasPageState extends State<FakultasPage> {
                                       child: Align(
                                         alignment: Alignment.center,
                                         child: Padding(
-                                            padding: EdgeInsets.symmetric(
-                                              vertical: 20,
-                                              horizontal: 20,
-                                            ),
+                                            padding: EdgeInsets.only(
+                                                top: 20, bottom: 20, right: 20),
                                             child: LineChart(
                                               LineChartData(
                                                 lineTouchData: LineTouchData(
@@ -719,8 +1373,8 @@ class _FakultasPageState extends State<FakultasPage> {
                                 return const CircularProgressIndicator();
                               },
                             ),
-                            FutureBuilder<Keketatan>(
-                              future: futureKeketatan,
+                            FutureBuilder<Publikasi>(
+                              future: futurePublikasi,
                               builder: (context, snapshot) {
                                 if (snapshot.hasData) {
                                   return Column(children: [
@@ -732,7 +1386,7 @@ class _FakultasPageState extends State<FakultasPage> {
                                           bottom: 15,
                                         ),
                                         child: Text(
-                                          "Keketatan",
+                                          "Jumlah Publikasi",
                                           style: TextStyle(
                                               fontWeight: FontWeight.bold),
                                         ),
@@ -752,10 +1406,52 @@ class _FakultasPageState extends State<FakultasPage> {
                                           ),
                                         ],
                                       ),
-                                      height: 200,
+                                      height: 250,
                                       child: Align(
                                         alignment: Alignment.center,
-                                        child: snapshot.data?.data,
+                                        child: Padding(
+                                          padding: EdgeInsets.only(
+                                              top: 20, bottom: 20, right: 20),
+                                          child: BarChart(
+                                            BarChartData(
+                                              barTouchData: BarTouchData(
+                                                touchTooltipData:
+                                                    BarTouchTooltipData(
+                                                        tooltipBgColor:
+                                                            Colors.white),
+                                              ),
+                                              barGroups:
+                                                  snapshot.data?.publikasi,
+                                              titlesData: FlTitlesData(
+                                                bottomTitles: AxisTitles(
+                                                  sideTitles: SideTitles(
+                                                    showTitles: true,
+                                                    interval: 1.0,
+                                                    getTitlesWidget:
+                                                        (value, meta) {
+                                                      return SideTitleWidget(
+                                                        axisSide: meta.axisSide,
+                                                        space: 2.5,
+                                                        child: Text(
+                                                            value.toString()),
+                                                      );
+                                                    },
+                                                  ),
+                                                ),
+                                                topTitles: AxisTitles(
+                                                  sideTitles: SideTitles(
+                                                    showTitles: false,
+                                                  ),
+                                                ),
+                                                rightTitles: AxisTitles(
+                                                  sideTitles: SideTitles(
+                                                    showTitles: false,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
                                       ),
                                     ),
                                   ]);
@@ -765,58 +1461,122 @@ class _FakultasPageState extends State<FakultasPage> {
                                 return const CircularProgressIndicator();
                               },
                             ),
-                            ListView.builder(
-                              controller: ScrollController(),
-                              shrinkWrap: true,
-                              itemCount: 5,
-                              itemBuilder: (BuildContext context, int index) {
-                                return Padding(
-                                  padding: EdgeInsets.only(top: 15.0),
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      Align(
-                                        alignment: Alignment.topLeft,
-                                        child: Padding(
-                                          padding: const EdgeInsets.only(
-                                            top: 10,
-                                            bottom: 15,
-                                          ),
-                                          child: Text(
-                                            "Lorem Ipsum",
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.bold),
-                                          ),
+                            FutureBuilder<Keketatan>(
+                              future: futureKeketatan,
+                              builder: (context, snapshot) {
+                                if (snapshot.hasData) {
+                                  return Column(children: [
+                                    Align(
+                                      alignment: Alignment.topLeft,
+                                      child: Padding(
+                                        padding: const EdgeInsets.only(
+                                          top: 10,
+                                          bottom: 15,
+                                        ),
+                                        child: Text(
+                                          "Keketatan - Universitas",
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold),
                                         ),
                                       ),
-                                      Container(
-                                        decoration: BoxDecoration(
-                                          color: Color.fromARGB(
-                                              255, 241, 241, 241),
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                          boxShadow: [
-                                            BoxShadow(
-                                              color:
-                                                  Colors.grey.withOpacity(0.8),
-                                              spreadRadius: 1,
-                                              blurRadius: 5,
-                                              // offset: Offset(0,7), // changes position of shadow
+                                    ),
+                                    Container(
+                                      decoration: BoxDecoration(
+                                        color:
+                                            Color.fromARGB(255, 241, 241, 241),
+                                        borderRadius: BorderRadius.circular(10),
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: Colors.grey.withOpacity(0.8),
+                                            spreadRadius: 1,
+                                            blurRadius: 5,
+                                            // offset: Offset(0,7), // changes position of shadow
+                                          ),
+                                        ],
+                                      ),
+                                      height: 250,
+                                      child: Align(
+                                        alignment: Alignment.center,
+                                        child: (Padding(
+                                          padding: EdgeInsets.symmetric(
+                                            vertical: 20,
+                                            horizontal: 20,
+                                          ),
+                                          child: LineChart(
+                                            LineChartData(
+                                              lineTouchData: LineTouchData(
+                                                touchTooltipData:
+                                                    LineTouchTooltipData(
+                                                  tooltipBgColor: Colors.white,
+                                                ),
+                                                getTouchedSpotIndicator:
+                                                    (_, indicators) {
+                                                  return indicators.map(
+                                                    (int index) {
+                                                      return TouchedSpotIndicatorData(
+                                                        FlLine(strokeWidth: 0),
+                                                        FlDotData(show: true),
+                                                      );
+                                                    },
+                                                  ).toList();
+                                                },
+                                              ),
+                                              borderData: FlBorderData(
+                                                  border: const Border(
+                                                      bottom: BorderSide(),
+                                                      left: BorderSide())),
+                                              gridData: FlGridData(show: false),
+                                              lineBarsData: [
+                                                LineChartBarData(
+                                                  color: Color.fromARGB(
+                                                    255,
+                                                    189,
+                                                    35,
+                                                    35,
+                                                  ),
+                                                  spots: snapshot.data?.isi,
+                                                ),
+                                              ],
+                                              titlesData: FlTitlesData(
+                                                bottomTitles: AxisTitles(
+                                                  sideTitles: SideTitles(
+                                                    showTitles: true,
+                                                    interval: 1.0,
+                                                    getTitlesWidget:
+                                                        (value, meta) {
+                                                      return SideTitleWidget(
+                                                        axisSide: meta.axisSide,
+                                                        space: 2.5,
+                                                        child: Text(
+                                                            value.toString()),
+                                                      );
+                                                    },
+                                                  ),
+                                                ),
+                                                topTitles: AxisTitles(
+                                                  sideTitles: SideTitles(
+                                                    showTitles: false,
+                                                  ),
+                                                ),
+                                                rightTitles: AxisTitles(
+                                                  sideTitles: SideTitles(
+                                                    showTitles: false,
+                                                  ),
+                                                ),
+                                              ),
                                             ),
-                                          ],
-                                        ),
-                                        height: 200,
-                                        child: Align(
-                                          alignment: Alignment.center,
-                                          child: Text(
-                                            "$index",
-                                            textAlign: TextAlign.center,
+                                            swapAnimationCurve: Curves.linear,
+                                            swapAnimationDuration:
+                                                Duration(milliseconds: 150),
                                           ),
-                                        ),
+                                        )),
                                       ),
-                                    ],
-                                  ),
-                                );
+                                    ),
+                                  ]);
+                                } else if (snapshot.hasError) {
+                                  return Text('${snapshot.error}');
+                                }
+                                return const CircularProgressIndicator();
                               },
                             ),
                           ],

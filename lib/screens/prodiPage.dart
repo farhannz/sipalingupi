@@ -69,7 +69,7 @@ class Publikasi {
         }
       }
     }
-    // print(tmp);
+
     int i = 0;
     for (var key in tmp.keys) {
       publikasi?.add(
@@ -93,6 +93,7 @@ class Publikasi {
 
 class Mahasiswa {
   List<PieChartSectionData>? gender = [];
+  List<PieChartSectionData>? jalur = [];
   Mahasiswa(List<dynamic> json) {
     // int minYear = 9999999;
     // for (var x in json) {
@@ -131,6 +132,61 @@ class Mahasiswa {
       }
       i++;
     }
+
+    tmp = {};
+    for (var x in json) {
+      for (var z in x['jalur']) {
+        if (z != null) {
+          if (tmp[z['id']] != null) {
+            tmp[z['id']] = {"jumlah": z['jumlah'] + tmp[z['id']]['jumlah']};
+          } else {
+            tmp[z['id']] = {"jumlah": z['jumlah']};
+          }
+          totalData += z['jumlah'];
+        }
+      }
+    }
+    i = 0;
+
+    for (var key in tmp.keys) {
+      print(tmp[key]['jumlah']);
+      if (tmp[key] != null) {
+        jalur?.add(
+          PieChartSectionData(
+            color: _warna[i % tmp.keys.length],
+            value: tmp[key]['jumlah'],
+            radius: 80.0,
+            title: tmp[key]['jumlah'].toString(),
+            titleStyle: TextStyle(
+              color: Colors.white,
+            ),
+          ),
+        );
+      }
+      i++;
+    }
+    // for (var x in json) {
+    //   for (var y in x['gender']) {
+    //     if (y != null) {
+    //       if (tmp[y['id']] != null) {
+    //         tmp[y['id']] = {
+    //           "jumlah": y['jumlah'] + tmp[y['id']]['jumlah'],
+    //           "count": i
+    //         };
+    //       } else {
+    //         tmp[y['id']] = {"jumlah": y[''], "count": i};
+    //       }
+    //     }
+    //   }
+    //   i++;
+    // }
+    // for (var key in tmp.keys) {
+    //   tmp[key]['jumlah'] = tmp[key]['jumlah'] / tmp[key]['count'];
+    //   isi?.add(FlSpot(double.parse(key),
+    //       double.parse(tmp[key]['jumlah'].toStringAsFixed(2))));
+    // }
+    // print(tmp);
+    // }
   }
 
   factory Mahasiswa.fromJson(List<dynamic> json) {
@@ -227,42 +283,41 @@ class _Keketatan {
   _Keketatan(this.tahun, this.keketatan);
 }
 
-class Keketatan {
-  var data;
+// double _selectedIpk = 0.0;
 
+class Keketatan {
+  List<FlSpot>? isi = [];
   Keketatan(List<dynamic> json) {
-    List<_Keketatan> tmp = [];
     // int minYear = 9999999;
     // for (var x in json) {
     //   debugPrint(x['fakId']);
-    for (var y in json[0]['keketatan']) {
-      if (y != null) {
-        tmp.add(_Keketatan(new DateTime(y['tahun']), y['keketatan']));
+    Map<String, dynamic> tmp = Map<String, dynamic>();
+    int i = 1;
+    for (var x in json) {
+      for (var y in x['keketatan']) {
+        if (y != null) {
+          if (tmp[y['tahun'].toString()] != null) {
+            tmp[y['tahun'].toString()] = {
+              "keketatan":
+                  y['keketatan'] + tmp[y['tahun'].toString()]['keketatan'],
+              "count": i
+            };
+          } else {
+            tmp[y['tahun'].toString()] = {
+              "keketatan": y['keketatan'],
+              "count": i
+            };
+          }
+        }
       }
+      i++;
     }
-    // for (var x in tmp) {
-    //   debugPrint(x.tahun.toString());
-    //   debugPrint(x.keketatan.toString());
-    // }
-    data = charts.TimeSeriesChart(
-      [
-        charts.Series<_Keketatan, DateTime>(
-          id: 'Keketatan',
-          fillColorFn: (_, __) => charts.Color(r: 255, g: 204, b: 0),
-          colorFn: (_, __) => charts.Color(r: 189, g: 35, b: 35),
-          data: tmp,
-          domainFn: (_Keketatan keketatan, _) => keketatan.tahun,
-          measureFn: (_Keketatan keketatan, _) => keketatan.keketatan,
-        )
-      ],
-      animate: true,
-      defaultRenderer: charts.LineRendererConfig(
-        radiusPx: 5,
-        strokeWidthPx: 3,
-        includePoints: true,
-        includeLine: true,
-      ),
-    );
+    for (var key in tmp.keys) {
+      tmp[key]['keketatan'] = tmp[key]['keketatan'] / tmp[key]['count'];
+      isi?.add(FlSpot(double.parse(key),
+          double.parse(tmp[key]['keketatan'].toStringAsFixed(2))));
+    }
+    // print(tmp);
     // }
   }
 
@@ -600,32 +655,36 @@ class _ProdiPageState extends State<ProdiPage> {
                                         top: 20,
                                         bottom: 20,
                                       ),
-                                      child: DropdownButton<String>(
-                                        value: this.prodi,
-                                        icon: const Icon(Icons.arrow_drop_down,
-                                            color: Colors.red),
-                                        elevation: 16,
-                                        style: const TextStyle(
-                                          color: Colors.red,
+                                      child: Container(
+                                        width: screenSize - 40,
+                                        child: DropdownButton<String>(
+                                          value: this.prodi,
+                                          icon: const Icon(
+                                              Icons.arrow_drop_down,
+                                              color: Colors.red),
+                                          elevation: 16,
+                                          style: const TextStyle(
+                                            color: Colors.red,
+                                          ),
+                                          underline: Container(
+                                            height: 2,
+                                            color: Colors.red,
+                                          ),
+                                          onChanged: (String? newValue) {
+                                            setState(() {
+                                              changeProdi(newValue);
+                                              print(this.prodi);
+                                            });
+                                          },
+                                          items: snapshot.data?.data
+                                              .map<DropdownMenuItem<String>>(
+                                                  (var value) {
+                                            return DropdownMenuItem<String>(
+                                              value: value['id'],
+                                              child: Text(value['id']),
+                                            );
+                                          }).toList(),
                                         ),
-                                        underline: Container(
-                                          height: 2,
-                                          color: Colors.red,
-                                        ),
-                                        onChanged: (String? newValue) {
-                                          setState(() {
-                                            changeProdi(newValue);
-                                            print(this.prodi);
-                                          });
-                                        },
-                                        items: snapshot.data?.data
-                                            .map<DropdownMenuItem<String>>(
-                                                (var value) {
-                                          return DropdownMenuItem<String>(
-                                            value: value['id'],
-                                            child: Text(value['id']),
-                                          );
-                                        }).toList(),
                                       ));
                                 } else if (snapshot.hasError) {
                                   return Text('${snapshot.error}');
@@ -796,24 +855,165 @@ class _ProdiPageState extends State<ProdiPage> {
                                                   ),
                                                   SizedBox(width: 15),
                                                   Expanded(
-                                                    child: Container(
-                                                      height: 300,
-                                                      decoration: BoxDecoration(
-                                                        color: Color.fromARGB(
-                                                            255, 241, 241, 241),
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(10),
-                                                        boxShadow: [
-                                                          BoxShadow(
-                                                            color: Colors.grey
-                                                                .withOpacity(
-                                                                    0.8),
-                                                            spreadRadius: 1,
-                                                            blurRadius: 5,
+                                                    child: Column(
+                                                      children: [
+                                                        Container(
+                                                          padding:
+                                                              EdgeInsets.only(
+                                                                  left: 16),
+                                                          child: Column(
+                                                            children: [
+                                                              Text(
+                                                                'Gelar Pendidikan',
+                                                                style: TextStyle(
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold),
+                                                              ),
+                                                              AspectRatio(
+                                                                aspectRatio:
+                                                                    1.0,
+                                                                child: PieChart(
+                                                                  PieChartData(
+                                                                    sectionsSpace:
+                                                                        2.0,
+                                                                    sections:
+                                                                        snapshot
+                                                                            .data
+                                                                            ?.jalur,
+                                                                    centerSpaceRadius:
+                                                                        0,
+                                                                  ),
+                                                                  swapAnimationCurve:
+                                                                      Curves
+                                                                          .linear,
+                                                                  swapAnimationDuration:
+                                                                      Duration(
+                                                                          milliseconds:
+                                                                              150),
+                                                                ),
+                                                              ),
+                                                              Row(
+                                                                children: <
+                                                                    Widget>[
+                                                                  Container(
+                                                                    width: 14,
+                                                                    height: 14,
+                                                                    decoration:
+                                                                        BoxDecoration(
+                                                                      shape: BoxShape
+                                                                          .rectangle,
+                                                                      color:
+                                                                          _warna[
+                                                                              2],
+                                                                    ),
+                                                                  ),
+                                                                  const SizedBox(
+                                                                    width: 4,
+                                                                  ),
+                                                                  Text(
+                                                                    'S1',
+                                                                    style: TextStyle(
+                                                                        fontSize:
+                                                                            14,
+                                                                        fontWeight:
+                                                                            FontWeight
+                                                                                .bold,
+                                                                        color: _warna[
+                                                                            2]),
+                                                                  )
+                                                                ],
+                                                              ),
+                                                              Row(
+                                                                children: <
+                                                                    Widget>[
+                                                                  Container(
+                                                                    width: 14,
+                                                                    height: 14,
+                                                                    decoration:
+                                                                        BoxDecoration(
+                                                                      shape: BoxShape
+                                                                          .rectangle,
+                                                                      color:
+                                                                          _warna[
+                                                                              0],
+                                                                    ),
+                                                                  ),
+                                                                  const SizedBox(
+                                                                    width: 4,
+                                                                  ),
+                                                                  Text(
+                                                                    'S2',
+                                                                    style: TextStyle(
+                                                                        fontSize:
+                                                                            14,
+                                                                        fontWeight:
+                                                                            FontWeight
+                                                                                .bold,
+                                                                        color: _warna[
+                                                                            2]),
+                                                                  )
+                                                                ],
+                                                              ),
+                                                              Row(
+                                                                children: <
+                                                                    Widget>[
+                                                                  Container(
+                                                                    width: 14,
+                                                                    height: 14,
+                                                                    decoration:
+                                                                        BoxDecoration(
+                                                                      shape: BoxShape
+                                                                          .rectangle,
+                                                                      color:
+                                                                          _warna[
+                                                                              1],
+                                                                    ),
+                                                                  ),
+                                                                  const SizedBox(
+                                                                    width: 4,
+                                                                  ),
+                                                                  Text(
+                                                                    'S3',
+                                                                    style: TextStyle(
+                                                                        fontSize:
+                                                                            14,
+                                                                        fontWeight:
+                                                                            FontWeight
+                                                                                .bold,
+                                                                        color: _warna[
+                                                                            2]),
+                                                                  )
+                                                                ],
+                                                              ),
+                                                            ],
                                                           ),
-                                                        ],
-                                                      ),
+                                                          height: 300,
+                                                          decoration:
+                                                              BoxDecoration(
+                                                            color:
+                                                                Color.fromARGB(
+                                                                    255,
+                                                                    241,
+                                                                    241,
+                                                                    241),
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        10),
+                                                            boxShadow: [
+                                                              BoxShadow(
+                                                                color: Colors
+                                                                    .grey
+                                                                    .withOpacity(
+                                                                        0.8),
+                                                                spreadRadius: 1,
+                                                                blurRadius: 5,
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      ],
                                                     ),
                                                   ),
                                                 ],
@@ -1336,7 +1536,7 @@ class _ProdiPageState extends State<ProdiPage> {
                                           bottom: 15,
                                         ),
                                         child: Text(
-                                          "Keketatan",
+                                          "Keketatan - Universitas",
                                           style: TextStyle(
                                               fontWeight: FontWeight.bold),
                                         ),
@@ -1356,10 +1556,82 @@ class _ProdiPageState extends State<ProdiPage> {
                                           ),
                                         ],
                                       ),
-                                      height: 200,
+                                      height: 250,
                                       child: Align(
                                         alignment: Alignment.center,
-                                        child: snapshot.data?.data,
+                                        child: (Padding(
+                                          padding: EdgeInsets.symmetric(
+                                            vertical: 20,
+                                            horizontal: 20,
+                                          ),
+                                          child: LineChart(
+                                            LineChartData(
+                                              lineTouchData: LineTouchData(
+                                                touchTooltipData:
+                                                    LineTouchTooltipData(
+                                                  tooltipBgColor: Colors.white,
+                                                ),
+                                                getTouchedSpotIndicator:
+                                                    (_, indicators) {
+                                                  return indicators.map(
+                                                    (int index) {
+                                                      return TouchedSpotIndicatorData(
+                                                        FlLine(strokeWidth: 0),
+                                                        FlDotData(show: true),
+                                                      );
+                                                    },
+                                                  ).toList();
+                                                },
+                                              ),
+                                              borderData: FlBorderData(
+                                                  border: const Border(
+                                                      bottom: BorderSide(),
+                                                      left: BorderSide())),
+                                              gridData: FlGridData(show: false),
+                                              lineBarsData: [
+                                                LineChartBarData(
+                                                  color: Color.fromARGB(
+                                                    255,
+                                                    189,
+                                                    35,
+                                                    35,
+                                                  ),
+                                                  spots: snapshot.data?.isi,
+                                                ),
+                                              ],
+                                              titlesData: FlTitlesData(
+                                                bottomTitles: AxisTitles(
+                                                  sideTitles: SideTitles(
+                                                    showTitles: true,
+                                                    interval: 1.0,
+                                                    getTitlesWidget:
+                                                        (value, meta) {
+                                                      return SideTitleWidget(
+                                                        axisSide: meta.axisSide,
+                                                        space: 2.5,
+                                                        child: Text(
+                                                            value.toString()),
+                                                      );
+                                                    },
+                                                  ),
+                                                ),
+                                                topTitles: AxisTitles(
+                                                  sideTitles: SideTitles(
+                                                    showTitles: false,
+                                                  ),
+                                                ),
+                                                rightTitles: AxisTitles(
+                                                  sideTitles: SideTitles(
+                                                    showTitles: false,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                            swapAnimationCurve: Curves.linear,
+                                            swapAnimationDuration:
+                                                Duration(milliseconds: 150),
+                                          ),
+                                        )),
                                       ),
                                     ),
                                   ]);
@@ -1367,60 +1639,6 @@ class _ProdiPageState extends State<ProdiPage> {
                                   return Text('${snapshot.error}');
                                 }
                                 return const CircularProgressIndicator();
-                              },
-                            ),
-                            ListView.builder(
-                              controller: ScrollController(),
-                              shrinkWrap: true,
-                              itemCount: 5,
-                              itemBuilder: (BuildContext context, int index) {
-                                return Padding(
-                                  padding: EdgeInsets.only(top: 15.0),
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      Align(
-                                        alignment: Alignment.topLeft,
-                                        child: Padding(
-                                          padding: const EdgeInsets.only(
-                                            top: 10,
-                                            bottom: 15,
-                                          ),
-                                          child: Text(
-                                            "Lorem Ipsum",
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                        ),
-                                      ),
-                                      Container(
-                                        decoration: BoxDecoration(
-                                          color: Color.fromARGB(
-                                              255, 241, 241, 241),
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                          boxShadow: [
-                                            BoxShadow(
-                                              color:
-                                                  Colors.grey.withOpacity(0.8),
-                                              spreadRadius: 1,
-                                              blurRadius: 5,
-                                              // offset: Offset(0,7), // changes position of shadow
-                                            ),
-                                          ],
-                                        ),
-                                        height: 200,
-                                        child: Align(
-                                          alignment: Alignment.center,
-                                          child: Text(
-                                            "$index",
-                                            textAlign: TextAlign.center,
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                );
                               },
                             ),
                           ],
