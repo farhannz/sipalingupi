@@ -313,25 +313,36 @@ class _FakultasPageState extends State<FakultasPage> {
                               builder: (context, snapshot) {
                                 if (snapshot.hasData) {
                                   return Padding(
-                                    padding: EdgeInsets.only(
-                                      top: 20,
-                                      bottom: 20,
-                                    ),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: <Widget>[
-                                        for (var item in snapshot.data?.data)
-                                          ElevatedButton(
-                                            onPressed: () {
-                                              changeFakultas(item['id']);
-                                              print(this.fakultas);
-                                            },
-                                            child: Text(item['id']),
-                                          ),
-                                      ],
-                                    ),
-                                  );
+                                      padding: EdgeInsets.only(
+                                        top: 20,
+                                        bottom: 20,
+                                      ),
+                                      child: DropdownButton<String>(
+                                        value: this.fakultas,
+                                        icon: const Icon(Icons.arrow_drop_down,
+                                            color: Colors.red),
+                                        elevation: 16,
+                                        style: const TextStyle(
+                                          color: Colors.red,
+                                        ),
+                                        underline: Container(
+                                          height: 2,
+                                          color: Colors.red,
+                                        ),
+                                        onChanged: (String? newValue) {
+                                          setState(() {
+                                            changeFakultas(newValue);
+                                          });
+                                        },
+                                        items: snapshot.data?.data
+                                            .map<DropdownMenuItem<String>>(
+                                                (var value) {
+                                          return DropdownMenuItem<String>(
+                                            value: value['id'],
+                                            child: Text(value['id']),
+                                          );
+                                        }).toList(),
+                                      ));
                                 } else if (snapshot.hasError) {
                                   return Text('${snapshot.error}');
                                 }
