@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:floating_bottom_navigation_bar/floating_bottom_navigation_bar.dart';
 import 'package:sipaling_upi/screens/dosenScreen.dart';
 import 'package:sipaling_upi/screens/homePage.dart';
-import 'package:sipaling_upi/screens/mahasiswaScreen.dart';
+import 'package:sipaling_upi/screens/fakultasPage.dart';
 import 'package:sipaling_upi/screens/prodiScreen.dart';
 
 int _index = 0;
@@ -29,7 +29,7 @@ class _FloatingBarState extends State<FloatingBar> {
             break;
           case 1:
             {
-              page = MahasiswaScreen();
+              page = FakultasPage();
             }
             break;
           case 2:
