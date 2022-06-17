@@ -77,6 +77,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
       body: CustomScrollView(
         slivers: <Widget>[
           SliverAppBar(
+            forceElevated: true,
             expandedHeight: 60,
             pinned: true,
             backgroundColor: Colors.white,

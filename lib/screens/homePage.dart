@@ -450,7 +450,7 @@ class _HomePageState extends State<HomePage> {
         ),
         backgroundColor: Colors.white,
         iconTheme: IconThemeData(color: Colors.red),
-        elevation: 0,
+        // elevation: 1,
       ),
       // endDrawer: Drawer(
       //   backgroundColor: Colors.white,
@@ -593,6 +593,7 @@ class _HomePageState extends State<HomePage> {
                 //     ],
                 //   ),
                 // ),
+
                 SliverList(
                   delegate: SliverChildListDelegate([
                     Padding(
@@ -616,14 +617,20 @@ class _HomePageState extends State<HomePage> {
                                               alignment: Alignment.topLeft,
                                               child: Padding(
                                                 padding: const EdgeInsets.only(
-                                                  top: 10,
+                                                  top: 15,
                                                   bottom: 15,
+                                                  left: 15,
                                                 ),
-                                                child: Text(
-                                                  "Data Mahasiswa",
-                                                  style: TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.bold),
+                                                child: Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          top: 15),
+                                                  child: Text(
+                                                    "Data Mahasiswa",
+                                                    style: TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.bold),
+                                                  ),
                                                 ),
                                               ),
                                             ),
@@ -641,12 +648,18 @@ class _HomePageState extends State<HomePage> {
                                                                   left: 16),
                                                           child: Column(
                                                             children: [
-                                                              Text(
-                                                                'Jenis Kelamin',
-                                                                style: TextStyle(
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .bold),
+                                                              Padding(
+                                                                padding:
+                                                                    const EdgeInsets
+                                                                            .all(
+                                                                        10.0),
+                                                                child: Text(
+                                                                  'Jenis Kelamin',
+                                                                  style: TextStyle(
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .bold),
+                                                                ),
                                                               ),
                                                               AspectRatio(
                                                                 aspectRatio:
@@ -735,7 +748,10 @@ class _HomePageState extends State<HomePage> {
                                                               ),
                                                             ],
                                                           ),
-                                                          height: 300,
+                                                          constraints:
+                                                              BoxConstraints(
+                                                                  minHeight:
+                                                                      320),
                                                           decoration:
                                                               BoxDecoration(
                                                             color:
@@ -773,12 +789,18 @@ class _HomePageState extends State<HomePage> {
                                                                   left: 16),
                                                           child: Column(
                                                             children: [
-                                                              Text(
-                                                                'Jalur Penerimaan',
-                                                                style: TextStyle(
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .bold),
+                                                              Padding(
+                                                                padding:
+                                                                    const EdgeInsets
+                                                                            .all(
+                                                                        10.0),
+                                                                child: Text(
+                                                                  'Jalur Penerimaan',
+                                                                  style: TextStyle(
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .bold),
+                                                                ),
                                                               ),
                                                               AspectRatio(
                                                                 aspectRatio:
@@ -898,7 +920,10 @@ class _HomePageState extends State<HomePage> {
                                                               ),
                                                             ],
                                                           ),
-                                                          height: 300,
+                                                          constraints:
+                                                              BoxConstraints(
+                                                                  minHeight:
+                                                                      320),
                                                           decoration:
                                                               BoxDecoration(
                                                             color:
@@ -945,8 +970,9 @@ class _HomePageState extends State<HomePage> {
                                               alignment: Alignment.topLeft,
                                               child: Padding(
                                                 padding: const EdgeInsets.only(
-                                                  top: 10,
+                                                  top: 30,
                                                   bottom: 15,
+                                                  left: 15,
                                                 ),
                                                 child: Text(
                                                   "Data Dosen",
@@ -970,12 +996,18 @@ class _HomePageState extends State<HomePage> {
                                                                   left: 16),
                                                           child: Column(
                                                             children: [
-                                                              Text(
-                                                                'Jenis Kelamin',
-                                                                style: TextStyle(
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .bold),
+                                                              Padding(
+                                                                padding:
+                                                                    const EdgeInsets
+                                                                            .all(
+                                                                        10.0),
+                                                                child: Text(
+                                                                  'Jenis Kelamin',
+                                                                  style: TextStyle(
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .bold),
+                                                                ),
                                                               ),
                                                               AspectRatio(
                                                                 aspectRatio:
@@ -1064,7 +1096,10 @@ class _HomePageState extends State<HomePage> {
                                                               ),
                                                             ],
                                                           ),
-                                                          height: 300,
+                                                          constraints:
+                                                              BoxConstraints(
+                                                                  minHeight:
+                                                                      320),
                                                           decoration:
                                                               BoxDecoration(
                                                             color:
@@ -1102,12 +1137,18 @@ class _HomePageState extends State<HomePage> {
                                                                   left: 16),
                                                           child: Column(
                                                             children: [
-                                                              Text(
-                                                                'Gelar Pendidikan',
-                                                                style: TextStyle(
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .bold),
+                                                              Padding(
+                                                                padding:
+                                                                    const EdgeInsets
+                                                                            .all(
+                                                                        10.0),
+                                                                child: Text(
+                                                                  'Gelar Pendidikan',
+                                                                  style: TextStyle(
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .bold),
+                                                                ),
                                                               ),
                                                               AspectRatio(
                                                                 aspectRatio:
@@ -1196,7 +1237,10 @@ class _HomePageState extends State<HomePage> {
                                                               ),
                                                             ],
                                                           ),
-                                                          height: 300,
+                                                          constraints:
+                                                              BoxConstraints(
+                                                                  minHeight:
+                                                                      320),
                                                           decoration:
                                                               BoxDecoration(
                                                             color:
@@ -1238,8 +1282,8 @@ class _HomePageState extends State<HomePage> {
                                       alignment: Alignment.topLeft,
                                       child: Padding(
                                         padding: const EdgeInsets.only(
-                                          top: 10,
-                                          bottom: 15,
+                                          top: 30,
+                                          left: 15,
                                         ),
                                         child: Text(
                                           "Indeks Prestasi",
@@ -1248,26 +1292,248 @@ class _HomePageState extends State<HomePage> {
                                         ),
                                       ),
                                     ),
-                                    Container(
-                                      decoration: BoxDecoration(
-                                        color:
-                                            Color.fromARGB(255, 241, 241, 241),
-                                        borderRadius: BorderRadius.circular(10),
-                                        boxShadow: [
-                                          BoxShadow(
-                                            color: Colors.grey.withOpacity(0.8),
-                                            spreadRadius: 1,
-                                            blurRadius: 5,
-                                            // offset: Offset(0,7), // changes position of shadow
-                                          ),
-                                        ],
+                                    Padding(
+                                      padding: const EdgeInsets.all(15.0),
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          color: Color.fromARGB(
+                                              255, 241, 241, 241),
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color:
+                                                  Colors.grey.withOpacity(0.8),
+                                              spreadRadius: 1,
+                                              blurRadius: 5,
+                                              // offset: Offset(0,7), // changes position of shadow
+                                            ),
+                                          ],
+                                        ),
+                                        height: 250,
+                                        child: Align(
+                                          alignment: Alignment.center,
+                                          child: Padding(
+                                              padding: EdgeInsets.only(
+                                                  top: 20,
+                                                  bottom: 20,
+                                                  right: 20),
+                                              child: LineChart(
+                                                LineChartData(
+                                                  lineTouchData: LineTouchData(
+                                                    touchTooltipData:
+                                                        LineTouchTooltipData(
+                                                      tooltipBgColor:
+                                                          Colors.white,
+                                                    ),
+                                                    getTouchedSpotIndicator:
+                                                        (_, indicators) {
+                                                      return indicators.map(
+                                                        (int index) {
+                                                          return TouchedSpotIndicatorData(
+                                                            FlLine(
+                                                                strokeWidth: 0),
+                                                            FlDotData(
+                                                                show: true),
+                                                          );
+                                                        },
+                                                      ).toList();
+                                                    },
+                                                  ),
+                                                  borderData: FlBorderData(
+                                                      border: const Border(
+                                                          bottom: BorderSide(),
+                                                          left: BorderSide())),
+                                                  gridData:
+                                                      FlGridData(show: false),
+                                                  lineBarsData: [
+                                                    LineChartBarData(
+                                                      color: Color.fromARGB(
+                                                        255,
+                                                        189,
+                                                        35,
+                                                        35,
+                                                      ),
+                                                      spots: snapshot.data?.isi,
+                                                    ),
+                                                  ],
+                                                  titlesData: FlTitlesData(
+                                                    bottomTitles: AxisTitles(
+                                                      sideTitles: SideTitles(
+                                                        showTitles: true,
+                                                        interval: 1.0,
+                                                        getTitlesWidget:
+                                                            (value, meta) {
+                                                          return SideTitleWidget(
+                                                            axisSide:
+                                                                meta.axisSide,
+                                                            space: 2.5,
+                                                            child: Text(value
+                                                                .toString()),
+                                                          );
+                                                        },
+                                                      ),
+                                                    ),
+                                                    topTitles: AxisTitles(
+                                                      sideTitles: SideTitles(
+                                                        showTitles: false,
+                                                      ),
+                                                    ),
+                                                    rightTitles: AxisTitles(
+                                                      sideTitles: SideTitles(
+                                                        showTitles: false,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                              )),
+                                        ),
                                       ),
-                                      height: 250,
-                                      child: Align(
-                                        alignment: Alignment.center,
-                                        child: Padding(
+                                    ),
+                                  ]);
+                                } else if (snapshot.hasError) {
+                                  return Text('${snapshot.error}');
+                                }
+                                return const CircularProgressIndicator();
+                              },
+                            ),
+                            FutureBuilder<Publikasi>(
+                              future: futurePublikasi,
+                              builder: (context, snapshot) {
+                                if (snapshot.hasData) {
+                                  return Column(children: [
+                                    Align(
+                                      alignment: Alignment.topLeft,
+                                      child: Padding(
+                                        padding: const EdgeInsets.only(
+                                          top: 15,
+                                          left: 15,
+                                        ),
+                                        child: Text(
+                                          "Jumlah Publikasi",
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.all(15.0),
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          color: Color.fromARGB(
+                                              255, 241, 241, 241),
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color:
+                                                  Colors.grey.withOpacity(0.8),
+                                              spreadRadius: 1,
+                                              blurRadius: 5,
+                                              // offset: Offset(0,7), // changes position of shadow
+                                            ),
+                                          ],
+                                        ),
+                                        height: 250,
+                                        child: Align(
+                                          alignment: Alignment.center,
+                                          child: Padding(
                                             padding: EdgeInsets.only(
                                                 top: 20, bottom: 20, right: 20),
+                                            child: BarChart(
+                                              BarChartData(
+                                                barTouchData: BarTouchData(
+                                                  touchTooltipData:
+                                                      BarTouchTooltipData(
+                                                          tooltipBgColor:
+                                                              Colors.white),
+                                                ),
+                                                barGroups:
+                                                    snapshot.data?.publikasi,
+                                                titlesData: FlTitlesData(
+                                                  bottomTitles: AxisTitles(
+                                                    sideTitles: SideTitles(
+                                                      showTitles: true,
+                                                      interval: 1.0,
+                                                      getTitlesWidget:
+                                                          (value, meta) {
+                                                        return SideTitleWidget(
+                                                          axisSide:
+                                                              meta.axisSide,
+                                                          space: 2.5,
+                                                          child: Text(
+                                                              value.toString()),
+                                                        );
+                                                      },
+                                                    ),
+                                                  ),
+                                                  topTitles: AxisTitles(
+                                                    sideTitles: SideTitles(
+                                                      showTitles: false,
+                                                    ),
+                                                  ),
+                                                  rightTitles: AxisTitles(
+                                                    sideTitles: SideTitles(
+                                                      showTitles: false,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ]);
+                                } else if (snapshot.hasError) {
+                                  return Text('${snapshot.error}');
+                                }
+                                return const CircularProgressIndicator();
+                              },
+                            ),
+                            FutureBuilder<Keketatan>(
+                              future: futureKeketatan,
+                              builder: (context, snapshot) {
+                                if (snapshot.hasData) {
+                                  return Column(children: [
+                                    Align(
+                                      alignment: Alignment.topLeft,
+                                      child: Padding(
+                                        padding: const EdgeInsets.only(
+                                          top: 15,
+                                          left: 15,
+                                        ),
+                                        child: Text(
+                                          "Keketatan - Universitas",
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.all(15.0),
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          color: Color.fromARGB(
+                                              255, 241, 241, 241),
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color:
+                                                  Colors.grey.withOpacity(0.8),
+                                              spreadRadius: 1,
+                                              blurRadius: 5,
+                                              // offset: Offset(0,7), // changes position of shadow
+                                            ),
+                                          ],
+                                        ),
+                                        height: 250,
+                                        child: Align(
+                                          alignment: Alignment.center,
+                                          child: (Padding(
+                                            padding: EdgeInsets.only(
+                                                top: 20, right: 20, bottom: 20),
                                             child: LineChart(
                                               LineChartData(
                                                 lineTouchData: LineTouchData(
@@ -1335,211 +1601,12 @@ class _HomePageState extends State<HomePage> {
                                                   ),
                                                 ),
                                               ),
-                                            )),
-                                      ),
-                                    ),
-                                  ]);
-                                } else if (snapshot.hasError) {
-                                  return Text('${snapshot.error}');
-                                }
-                                return const CircularProgressIndicator();
-                              },
-                            ),
-                            FutureBuilder<Publikasi>(
-                              future: futurePublikasi,
-                              builder: (context, snapshot) {
-                                if (snapshot.hasData) {
-                                  return Column(children: [
-                                    Align(
-                                      alignment: Alignment.topLeft,
-                                      child: Padding(
-                                        padding: const EdgeInsets.only(
-                                          top: 10,
-                                          bottom: 15,
-                                        ),
-                                        child: Text(
-                                          "Jumlah Publikasi",
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                      ),
-                                    ),
-                                    Container(
-                                      decoration: BoxDecoration(
-                                        color:
-                                            Color.fromARGB(255, 241, 241, 241),
-                                        borderRadius: BorderRadius.circular(10),
-                                        boxShadow: [
-                                          BoxShadow(
-                                            color: Colors.grey.withOpacity(0.8),
-                                            spreadRadius: 1,
-                                            blurRadius: 5,
-                                            // offset: Offset(0,7), // changes position of shadow
-                                          ),
-                                        ],
-                                      ),
-                                      height: 250,
-                                      child: Align(
-                                        alignment: Alignment.center,
-                                        child: Padding(
-                                          padding: EdgeInsets.only(
-                                              top: 20, bottom: 20, right: 20),
-                                          child: BarChart(
-                                            BarChartData(
-                                              barTouchData: BarTouchData(
-                                                touchTooltipData:
-                                                    BarTouchTooltipData(
-                                                        tooltipBgColor:
-                                                            Colors.white),
-                                              ),
-                                              barGroups:
-                                                  snapshot.data?.publikasi,
-                                              titlesData: FlTitlesData(
-                                                bottomTitles: AxisTitles(
-                                                  sideTitles: SideTitles(
-                                                    showTitles: true,
-                                                    interval: 1.0,
-                                                    getTitlesWidget:
-                                                        (value, meta) {
-                                                      return SideTitleWidget(
-                                                        axisSide: meta.axisSide,
-                                                        space: 2.5,
-                                                        child: Text(
-                                                            value.toString()),
-                                                      );
-                                                    },
-                                                  ),
-                                                ),
-                                                topTitles: AxisTitles(
-                                                  sideTitles: SideTitles(
-                                                    showTitles: false,
-                                                  ),
-                                                ),
-                                                rightTitles: AxisTitles(
-                                                  sideTitles: SideTitles(
-                                                    showTitles: false,
-                                                  ),
-                                                ),
-                                              ),
+                                              swapAnimationCurve: Curves.linear,
+                                              swapAnimationDuration:
+                                                  Duration(milliseconds: 150),
                                             ),
-                                          ),
+                                          )),
                                         ),
-                                      ),
-                                    ),
-                                  ]);
-                                } else if (snapshot.hasError) {
-                                  return Text('${snapshot.error}');
-                                }
-                                return const CircularProgressIndicator();
-                              },
-                            ),
-                            FutureBuilder<Keketatan>(
-                              future: futureKeketatan,
-                              builder: (context, snapshot) {
-                                if (snapshot.hasData) {
-                                  return Column(children: [
-                                    Align(
-                                      alignment: Alignment.topLeft,
-                                      child: Padding(
-                                        padding: const EdgeInsets.only(
-                                          top: 10,
-                                          bottom: 15,
-                                        ),
-                                        child: Text(
-                                          "Keketatan - Universitas",
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                      ),
-                                    ),
-                                    Container(
-                                      decoration: BoxDecoration(
-                                        color:
-                                            Color.fromARGB(255, 241, 241, 241),
-                                        borderRadius: BorderRadius.circular(10),
-                                        boxShadow: [
-                                          BoxShadow(
-                                            color: Colors.grey.withOpacity(0.8),
-                                            spreadRadius: 1,
-                                            blurRadius: 5,
-                                            // offset: Offset(0,7), // changes position of shadow
-                                          ),
-                                        ],
-                                      ),
-                                      height: 250,
-                                      child: Align(
-                                        alignment: Alignment.center,
-                                        child: (Padding(
-                                          padding: EdgeInsets.only(
-                                              top: 20, right: 20, bottom: 20),
-                                          child: LineChart(
-                                            LineChartData(
-                                              lineTouchData: LineTouchData(
-                                                touchTooltipData:
-                                                    LineTouchTooltipData(
-                                                  tooltipBgColor: Colors.white,
-                                                ),
-                                                getTouchedSpotIndicator:
-                                                    (_, indicators) {
-                                                  return indicators.map(
-                                                    (int index) {
-                                                      return TouchedSpotIndicatorData(
-                                                        FlLine(strokeWidth: 0),
-                                                        FlDotData(show: true),
-                                                      );
-                                                    },
-                                                  ).toList();
-                                                },
-                                              ),
-                                              borderData: FlBorderData(
-                                                  border: const Border(
-                                                      bottom: BorderSide(),
-                                                      left: BorderSide())),
-                                              gridData: FlGridData(show: false),
-                                              lineBarsData: [
-                                                LineChartBarData(
-                                                  color: Color.fromARGB(
-                                                    255,
-                                                    189,
-                                                    35,
-                                                    35,
-                                                  ),
-                                                  spots: snapshot.data?.isi,
-                                                ),
-                                              ],
-                                              titlesData: FlTitlesData(
-                                                bottomTitles: AxisTitles(
-                                                  sideTitles: SideTitles(
-                                                    showTitles: true,
-                                                    interval: 1.0,
-                                                    getTitlesWidget:
-                                                        (value, meta) {
-                                                      return SideTitleWidget(
-                                                        axisSide: meta.axisSide,
-                                                        space: 2.5,
-                                                        child: Text(
-                                                            value.toString()),
-                                                      );
-                                                    },
-                                                  ),
-                                                ),
-                                                topTitles: AxisTitles(
-                                                  sideTitles: SideTitles(
-                                                    showTitles: false,
-                                                  ),
-                                                ),
-                                                rightTitles: AxisTitles(
-                                                  sideTitles: SideTitles(
-                                                    showTitles: false,
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                            swapAnimationCurve: Curves.linear,
-                                            swapAnimationDuration:
-                                                Duration(milliseconds: 150),
-                                          ),
-                                        )),
                                       ),
                                     ),
                                   ]);
