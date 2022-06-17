@@ -341,7 +341,7 @@ class _Fakultas {
 class Fakultas {
   var data;
   String akreditasi = "";
-  var total = {};
+  var totalData = {};
   Fakultas(List<dynamic> json, String current) {
     List<_Fakultas> tmp = [];
     data = json;
@@ -357,13 +357,18 @@ class Fakultas {
         }
       }
     }
+
     for (var y in json) {
+      var total = {'A': 0, 'B': 0, 'C': 0, "total": 0};
       if (y != null) {
         // tmp.add(_Prodi(y['id'], y['fakId'], y['akreditasi']));
-        if (y['id'] == current) {
-          akreditasi = y['akreditasi'];
-          break;
+        for (var z in y['prodis']) {
+          // print(z['akreditasi']);
+          total[z['akreditasi']] = total[z['akreditasi']]! + 1;
         }
+        total['total'] = total['A']! + total['B']! + total['C']!;
+        totalData[y['id']] = total;
+        // print(totalData);
       }
     }
     // for (var x in tmp) {
@@ -401,7 +406,8 @@ class _FakultasPageState extends State<FakultasPage> {
 
   late Future<Fakultas> futureFakultas;
   Future<Fakultas> fetchDataFakultas() async {
-    final response = await http.get(Uri.parse(apiPath));
+    final response = await http.get(
+        Uri.parse(apiPath.substring(0, apiPath.length - 1) + '?_embed=prodis'));
     if (response.statusCode == 200) {
       // debugPrint(response.body);
       return Fakultas.fromJson(jsonDecode(response.body), this.fakultas);
@@ -725,8 +731,13 @@ class _FakultasPageState extends State<FakultasPage> {
                                                           textAlign:
                                                               TextAlign.start,
                                                         ),
-                                                        const Text(
-                                                          '100',
+                                                        Text(
+                                                          snapshot
+                                                              .data!
+                                                              .totalData[
+                                                                  this.fakultas]
+                                                                  ['total']
+                                                              .toString(),
                                                           style: TextStyle(
                                                             fontWeight:
                                                                 FontWeight.bold,
@@ -775,8 +786,13 @@ class _FakultasPageState extends State<FakultasPage> {
                                                           textAlign:
                                                               TextAlign.start,
                                                         ),
-                                                        const Text(
-                                                          '50',
+                                                        Text(
+                                                          snapshot
+                                                              .data!
+                                                              .totalData[
+                                                                  this.fakultas]
+                                                                  ['A']
+                                                              .toString(),
                                                           style: TextStyle(
                                                             fontWeight:
                                                                 FontWeight.bold,
@@ -829,8 +845,13 @@ class _FakultasPageState extends State<FakultasPage> {
                                                           textAlign:
                                                               TextAlign.start,
                                                         ),
-                                                        const Text(
-                                                          '40',
+                                                        Text(
+                                                          snapshot
+                                                              .data!
+                                                              .totalData[
+                                                                  this.fakultas]
+                                                                  ['B']
+                                                              .toString(),
                                                           style: TextStyle(
                                                             fontWeight:
                                                                 FontWeight.bold,
@@ -879,8 +900,13 @@ class _FakultasPageState extends State<FakultasPage> {
                                                           textAlign:
                                                               TextAlign.start,
                                                         ),
-                                                        const Text(
-                                                          '10',
+                                                        Text(
+                                                          snapshot
+                                                              .data!
+                                                              .totalData[
+                                                                  this.fakultas]
+                                                                  ['C']
+                                                              .toString(),
                                                           style: TextStyle(
                                                             fontWeight:
                                                                 FontWeight.bold,
