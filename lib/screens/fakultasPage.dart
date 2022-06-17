@@ -74,7 +74,7 @@ class Publikasi {
       }
     }
 
-    print(tmp);
+    // print(tmp);
     for (var key in tmp.keys) {
       publikasi?.add(
         BarChartGroupData(
@@ -120,7 +120,7 @@ class Mahasiswa {
     i = 0;
 
     for (var key in tmp.keys) {
-      print(tmp[key]['jumlah']);
+      // print(tmp[key]['jumlah']);
       if (tmp[key] != null) {
         gender?.add(
           PieChartSectionData(
@@ -153,7 +153,7 @@ class Mahasiswa {
     i = 0;
 
     for (var key in tmp.keys) {
-      print(tmp[key]['jumlah']);
+      // print(tmp[key]['jumlah']);
       if (tmp[key] != null) {
         jalur?.add(
           PieChartSectionData(
@@ -223,7 +223,7 @@ class Dosen {
     i = 0;
 
     for (var key in tmp.keys) {
-      print(tmp[key]['jumlah']);
+      // print(tmp[key]['jumlah']);
       if (tmp[key] != null) {
         gender?.add(
           PieChartSectionData(
@@ -257,7 +257,7 @@ class Dosen {
     i = 0;
 
     for (var key in tmp.keys) {
-      print(tmp[key]['jumlah']);
+      // print(tmp[key]['jumlah']);
       if (tmp[key] != null) {
         gelar?.add(
           PieChartSectionData(
@@ -471,6 +471,7 @@ class _FakultasPageState extends State<FakultasPage> {
     double screenSize = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: RichText(
           text: TextSpan(children: [
             TextSpan(
@@ -498,69 +499,69 @@ class _FakultasPageState extends State<FakultasPage> {
         iconTheme: IconThemeData(color: Colors.red),
         elevation: 0,
       ),
-      endDrawer: Drawer(
-        backgroundColor: Colors.white,
-        // Add a ListView to the drawer. This ensures the user can scroll
-        // through the options in the drawer if there isn't enough vertical
-        // space to fit everything.
-        child: ListView(
-          controller: ScrollController(),
-          // Important: Remove any padding from the ListView.
-          // padding: EdgeInsets.zero,
-          children: [
-            ListTile(
-              leading: Icon(Icons.person),
-              title: Text(
-                'User',
-                style: TextStyle(
-                  fontFamily: "Poppins", // Poppins semi-bold, 25
-                  fontSize: 22.0,
-                  color: Colors.black,
-                ),
-              ),
-            ),
-            ListTile(
-              leading: Icon(Icons.notifications_none_outlined),
-              title: Text(
-                'Notifications',
-                style: TextStyle(
-                  fontFamily: "Poppins", // Poppins semi-bold, 25
-                  fontSize: 22.0,
-                  color: Colors.black,
-                ),
-              ),
-            ),
-            ListTile(
-              leading: Icon(Icons.bookmark_outline),
-              title: Text(
-                'Bookmark',
-                style: TextStyle(
-                  fontFamily: "Poppins", // Poppins semi-bold, 25
-                  fontSize: 22.0,
-                  color: Colors.black,
-                ),
-              ),
-            ),
-            ListTile(
-                title: Text(
-                  "Dark Mode",
-                  style: TextStyle(
-                    fontFamily: "Poppins", // Poppins semi-bold, 25
-                    fontSize: 22.0,
-                    color: Colors.black,
-                  ),
-                ),
-                trailing: Switch(
-                  value: isDarkMode,
-                  onChanged: (value) {
-                    setState(() {
-                      isDarkMode = value;
-                    });
-                  },
-                )),
-          ],
-        ),
-      ),
+      // endDrawer: Drawer(
+      //   backgroundColor: Colors.white,
+      //   // Add a ListView to the drawer. This ensures the user can scroll
+      //   // through the options in the drawer if there isn't enough vertical
+      //   // space to fit everything.
+      //   child: ListView(
+      //     controller: ScrollController(),
+      //     // Important: Remove any padding from the ListView.
+      //     // padding: EdgeInsets.zero,
+      //     children: [
+      //       ListTile(
+      //         leading: Icon(Icons.person),
+      //         title: Text(
+      //           'User',
+      //           style: TextStyle(
+      //             fontFamily: "Poppins", // Poppins semi-bold, 25
+      //             fontSize: 22.0,
+      //             color: Colors.black,
+      //           ),
+      //         ),
+      //       ),
+      //       ListTile(
+      //         leading: Icon(Icons.notifications_none_outlined),
+      //         title: Text(
+      //           'Notifications',
+      //           style: TextStyle(
+      //             fontFamily: "Poppins", // Poppins semi-bold, 25
+      //             fontSize: 22.0,
+      //             color: Colors.black,
+      //           ),
+      //         ),
+      //       ),
+      //       ListTile(
+      //         leading: Icon(Icons.bookmark_outline),
+      //         title: Text(
+      //           'Bookmark',
+      //           style: TextStyle(
+      //             fontFamily: "Poppins", // Poppins semi-bold, 25
+      //             fontSize: 22.0,
+      //             color: Colors.black,
+      //           ),
+      //         ),
+      //       ),
+      //       ListTile(
+      //           title: Text(
+      //             "Dark Mode",
+      //             style: TextStyle(
+      //               fontFamily: "Poppins", // Poppins semi-bold, 25
+      //               fontSize: 22.0,
+      //               color: Colors.black,
+      //             ),
+      //           ),
+      //           trailing: Switch(
+      //             value: isDarkMode,
+      //             onChanged: (value) {
+      //               setState(() {
+      //                 isDarkMode = value;
+      //               });
+      //             },
+      //           )),
+      //     ],
+      //   ),
+      // ),
       body: SafeArea(
         child: Stack(
           children: [
@@ -575,16 +576,6 @@ class _FakultasPageState extends State<FakultasPage> {
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
-                            Padding(
-                              padding: const EdgeInsets.only(top: 10),
-                              child: TextFormField(
-                                decoration: const InputDecoration(
-                                  prefixIcon: Icon(Icons.search),
-                                  label: Text('Search Data'),
-                                  border: OutlineInputBorder(),
-                                ),
-                              ),
-                            ),
                             FutureBuilder<Fakultas>(
                               future: futureFakultas,
                               builder: (context, snapshot) {
@@ -802,7 +793,7 @@ class _FakultasPageState extends State<FakultasPage> {
                                                           child: Column(
                                                             children: [
                                                               Text(
-                                                                'Gelar Pendidikan',
+                                                                'Jalur Penerimaan',
                                                                 style: TextStyle(
                                                                     fontWeight:
                                                                         FontWeight
@@ -843,14 +834,14 @@ class _FakultasPageState extends State<FakultasPage> {
                                                                           .rectangle,
                                                                       color:
                                                                           _warna[
-                                                                              2],
+                                                                              1],
                                                                     ),
                                                                   ),
                                                                   const SizedBox(
                                                                     width: 4,
                                                                   ),
                                                                   Text(
-                                                                    'S1',
+                                                                    'SBMPTN',
                                                                     style: TextStyle(
                                                                         fontSize:
                                                                             14,
@@ -881,7 +872,7 @@ class _FakultasPageState extends State<FakultasPage> {
                                                                     width: 4,
                                                                   ),
                                                                   Text(
-                                                                    'S2',
+                                                                    'SNPMTN',
                                                                     style: TextStyle(
                                                                         fontSize:
                                                                             14,
@@ -905,14 +896,14 @@ class _FakultasPageState extends State<FakultasPage> {
                                                                           .rectangle,
                                                                       color:
                                                                           _warna[
-                                                                              1],
+                                                                              2],
                                                                     ),
                                                                   ),
                                                                   const SizedBox(
                                                                     width: 4,
                                                                   ),
                                                                   Text(
-                                                                    'S3',
+                                                                    'Mandiri',
                                                                     style: TextStyle(
                                                                         fontSize:
                                                                             14,
@@ -1583,6 +1574,9 @@ class _FakultasPageState extends State<FakultasPage> {
                         ),
                       ),
                     ),
+                    SizedBox(
+                      height: 75,
+                    )
                   ]),
                 ),
               ],
