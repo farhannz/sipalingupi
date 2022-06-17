@@ -329,14 +329,14 @@ class Keketatan {
 class _Prodi {
   String id;
   String fakId;
-
-  _Prodi(this.id, this.fakId);
+  String akreditasi;
+  _Prodi(this.id, this.fakId, this.akreditasi);
 }
 
 class Prodi {
   var data;
-
-  Prodi(List<dynamic> json) {
+  String akreditasi = "";
+  Prodi(List<dynamic> json, String current) {
     List<_Prodi> tmp = [];
     data = json;
     // int minYear = 9999999;
@@ -344,17 +344,22 @@ class Prodi {
     //   debugPrint(x['fakId']);
     for (var y in json) {
       if (y != null) {
-        tmp.add(_Prodi(y['id'], y['fakId']));
+        // tmp.add(_Prodi(y['id'], y['fakId'], y['akreditasi']));
+        if (y['id'] == current) {
+          akreditasi = y['akreditasi'];
+          break;
+        }
       }
     }
+
     // for (var x in tmp) {
     //   debugPrint(x.id.toString());
     //   debugPrint(x.fakId.toString());
     // }
   }
 
-  factory Prodi.fromJson(List<dynamic> json) {
-    return Prodi(json);
+  factory Prodi.fromJson(List<dynamic> json, String current) {
+    return Prodi(json, current);
   }
 }
 
@@ -404,7 +409,7 @@ class _ProdiPageState extends State<ProdiPage> {
     final response = await http.get(Uri.parse(apiPath));
     if (response.statusCode == 200) {
       // debugPrint(response.body);
-      return Prodi.fromJson(jsonDecode(response.body));
+      return Prodi.fromJson(jsonDecode(response.body), this.prodi);
     } else {
       throw Exception('Gagal fetch data');
     }
@@ -641,7 +646,8 @@ class _ProdiPageState extends State<ProdiPage> {
                               future: futureProdi,
                               builder: (context, snapshot) {
                                 if (snapshot.hasData) {
-                                  return Padding(
+                                  return Column(children: [
+                                    Padding(
                                       padding: EdgeInsets.only(
                                         top: 20,
                                         bottom: 20,
@@ -688,7 +694,42 @@ class _ProdiPageState extends State<ProdiPage> {
                                             ),
                                           ),
                                         ),
-                                      ));
+                                      ),
+                                    ),
+                                    Align(
+                                      alignment: Alignment.topLeft,
+                                      child: Padding(
+                                        padding: const EdgeInsets.only(
+                                          top: 10,
+                                          bottom: 0,
+                                          left: 15,
+                                        ),
+                                        child: Text(
+                                          "Akreditasi",
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                      ),
+                                    ),
+                                    Align(
+                                      alignment: Alignment.centerLeft,
+                                      child: Padding(
+                                        padding: const EdgeInsets.only(
+                                          top: 0,
+                                          bottom: 0,
+                                          left: 15,
+                                        ),
+                                        child: Text(
+                                          snapshot.data!.akreditasi,
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 56,
+                                              color: Color.fromARGB(
+                                                  255, 189, 35, 35)),
+                                        ),
+                                      ),
+                                    ),
+                                  ]);
                                 } else if (snapshot.hasError) {
                                   return Text('${snapshot.error}');
                                 }

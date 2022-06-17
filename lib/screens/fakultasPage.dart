@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:sipaling_upi/components/floatingBar.dart';
 import 'package:sipaling_upi/screens/notifications.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
+import 'package:sipaling_upi/screens/details/akreditasiScreen.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -339,8 +340,9 @@ class _Fakultas {
 
 class Fakultas {
   var data;
-
-  Fakultas(List<dynamic> json) {
+  String akreditasi = "";
+  var total = {};
+  Fakultas(List<dynamic> json, String current) {
     List<_Fakultas> tmp = [];
     data = json;
     // int minYear = 9999999;
@@ -348,7 +350,20 @@ class Fakultas {
     //   debugPrint(x['fakId']);
     for (var y in json) {
       if (y != null) {
-        tmp.add(_Fakultas(y['id'], y['nama']));
+        // tmp.add(_Prodi(y['id'], y['fakId'], y['akreditasi']));
+        if (y['id'] == current) {
+          akreditasi = y['akreditasi'];
+          break;
+        }
+      }
+    }
+    for (var y in json) {
+      if (y != null) {
+        // tmp.add(_Prodi(y['id'], y['fakId'], y['akreditasi']));
+        if (y['id'] == current) {
+          akreditasi = y['akreditasi'];
+          break;
+        }
       }
     }
     // for (var x in tmp) {
@@ -357,8 +372,8 @@ class Fakultas {
     // }
   }
 
-  factory Fakultas.fromJson(List<dynamic> json) {
-    return Fakultas(json);
+  factory Fakultas.fromJson(List<dynamic> json, String current) {
+    return Fakultas(json, current);
   }
 }
 
@@ -389,7 +404,7 @@ class _FakultasPageState extends State<FakultasPage> {
     final response = await http.get(Uri.parse(apiPath));
     if (response.statusCode == 200) {
       // debugPrint(response.body);
-      return Fakultas.fromJson(jsonDecode(response.body));
+      return Fakultas.fromJson(jsonDecode(response.body), this.fakultas);
     } else {
       throw Exception('Gagal fetch data');
     }
@@ -580,53 +595,311 @@ class _FakultasPageState extends State<FakultasPage> {
                               future: futureFakultas,
                               builder: (context, snapshot) {
                                 if (snapshot.hasData) {
-                                  return Padding(
-                                      padding: EdgeInsets.only(
-                                        top: 20,
-                                        bottom: 20,
-                                      ),
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                          border: Border.all(color: Colors.red),
+                                  return Column(
+                                    children: [
+                                      Padding(
+                                        padding: EdgeInsets.only(
+                                          top: 20,
+                                          bottom: 20,
                                         ),
-                                        width: screenSize - 40,
-                                        child: DropdownButtonHideUnderline(
-                                          child: Container(
-                                            child: Padding(
-                                              padding: const EdgeInsets.only(
-                                                  left: 10, right: 10),
-                                              child: DropdownButton<String>(
-                                                value: this.fakultas,
-                                                icon: const Icon(
-                                                    Icons.arrow_drop_down,
-                                                    color: Colors.red),
-                                                elevation: 16,
-                                                style: const TextStyle(
-                                                  color: Colors.red,
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                            border:
+                                                Border.all(color: Colors.red),
+                                          ),
+                                          width: screenSize - 40,
+                                          child: DropdownButtonHideUnderline(
+                                            child: Container(
+                                              child: Padding(
+                                                padding: const EdgeInsets.only(
+                                                    left: 10, right: 10),
+                                                child: DropdownButton<String>(
+                                                  value: this.fakultas,
+                                                  icon: const Icon(
+                                                      Icons.arrow_drop_down,
+                                                      color: Colors.red),
+                                                  elevation: 16,
+                                                  style: const TextStyle(
+                                                    color: Colors.red,
+                                                  ),
+                                                  underline: Container(
+                                                    height: 2,
+                                                    color: Colors.red,
+                                                  ),
+                                                  onChanged:
+                                                      (String? newValue) {
+                                                    setState(() {
+                                                      changeFakultas(newValue);
+                                                    });
+                                                  },
+                                                  items: snapshot.data?.data
+                                                      .map<
+                                                              DropdownMenuItem<
+                                                                  String>>(
+                                                          (var value) {
+                                                    return DropdownMenuItem<
+                                                        String>(
+                                                      value: value['id'],
+                                                      child: Text(value['id']),
+                                                    );
+                                                  }).toList(),
                                                 ),
-                                                underline: Container(
-                                                  height: 2,
-                                                  color: Colors.red,
-                                                ),
-                                                onChanged: (String? newValue) {
-                                                  setState(() {
-                                                    changeFakultas(newValue);
-                                                  });
-                                                },
-                                                items: snapshot.data?.data.map<
-                                                    DropdownMenuItem<
-                                                        String>>((var value) {
-                                                  return DropdownMenuItem<
-                                                      String>(
-                                                    value: value['id'],
-                                                    child: Text(value['id']),
-                                                  );
-                                                }).toList(),
                                               ),
                                             ),
                                           ),
                                         ),
-                                      ));
+                                      ),
+                                      Align(
+                                        alignment: Alignment.topLeft,
+                                        child: Padding(
+                                          padding: const EdgeInsets.only(
+                                            top: 10,
+                                            bottom: 0,
+                                            left: 15,
+                                          ),
+                                          child: Text(
+                                            "Akreditasi",
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                        ),
+                                      ),
+                                      Align(
+                                        alignment: Alignment.centerLeft,
+                                        child: Padding(
+                                          padding: const EdgeInsets.only(
+                                            top: 0,
+                                            bottom: 0,
+                                            left: 15,
+                                          ),
+                                          child: Text(
+                                            snapshot.data!.akreditasi,
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 56,
+                                                color: Color.fromARGB(
+                                                    255, 189, 35, 35)),
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(height: 15),
+                                      Padding(
+                                        padding: EdgeInsets.symmetric(
+                                            horizontal: 15.0),
+                                        child: Column(
+                                          children: [
+                                            Row(
+                                              children: [
+                                                Expanded(
+                                                  child: ElevatedButton(
+                                                    style: ElevatedButton
+                                                        .styleFrom(
+                                                      padding:
+                                                          EdgeInsets.all(15),
+                                                      minimumSize:
+                                                          const Size.fromHeight(
+                                                              50),
+                                                      primary: Color.fromARGB(
+                                                          255, 189, 35, 35),
+                                                    ),
+                                                    onPressed: () {
+                                                      Navigator.push(
+                                                        context,
+                                                        MaterialPageRoute(
+                                                            builder: (context) =>
+                                                                AkreditasiScreen()),
+                                                      );
+                                                    },
+                                                    child: Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceBetween,
+                                                      children: [
+                                                        const Text(
+                                                          'Total',
+                                                          style: TextStyle(
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                            fontSize: 24,
+                                                          ),
+                                                          textAlign:
+                                                              TextAlign.start,
+                                                        ),
+                                                        const Text(
+                                                          '100',
+                                                          style: TextStyle(
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                            fontSize: 28,
+                                                          ),
+                                                          textAlign:
+                                                              TextAlign.end,
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+                                                SizedBox(width: 15),
+                                                Expanded(
+                                                  child: ElevatedButton(
+                                                    style: ElevatedButton
+                                                        .styleFrom(
+                                                      padding:
+                                                          EdgeInsets.all(15),
+                                                      minimumSize:
+                                                          const Size.fromHeight(
+                                                              50),
+                                                      primary: Color.fromARGB(
+                                                          255, 189, 35, 35),
+                                                    ),
+                                                    onPressed: () {
+                                                      Navigator.push(
+                                                        context,
+                                                        MaterialPageRoute(
+                                                            builder: (context) =>
+                                                                AkreditasiScreen()),
+                                                      );
+                                                    },
+                                                    child: Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceBetween,
+                                                      children: [
+                                                        const Text(
+                                                          'A',
+                                                          style: TextStyle(
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                            fontSize: 24,
+                                                          ),
+                                                          textAlign:
+                                                              TextAlign.start,
+                                                        ),
+                                                        const Text(
+                                                          '50',
+                                                          style: TextStyle(
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                            fontSize: 28,
+                                                          ),
+                                                          textAlign:
+                                                              TextAlign.end,
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                            SizedBox(height: 15),
+                                            Row(
+                                              children: [
+                                                Expanded(
+                                                  child: ElevatedButton(
+                                                    style: ElevatedButton
+                                                        .styleFrom(
+                                                      padding:
+                                                          EdgeInsets.all(15),
+                                                      minimumSize:
+                                                          const Size.fromHeight(
+                                                              50),
+                                                      primary: Color.fromARGB(
+                                                          255, 189, 35, 35),
+                                                    ),
+                                                    onPressed: () {
+                                                      Navigator.push(
+                                                        context,
+                                                        MaterialPageRoute(
+                                                            builder: (context) =>
+                                                                NotificationScreen()),
+                                                      );
+                                                    },
+                                                    child: Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceBetween,
+                                                      children: [
+                                                        const Text(
+                                                          'B',
+                                                          style: TextStyle(
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                            fontSize: 24,
+                                                          ),
+                                                          textAlign:
+                                                              TextAlign.start,
+                                                        ),
+                                                        const Text(
+                                                          '40',
+                                                          style: TextStyle(
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                            fontSize: 28,
+                                                          ),
+                                                          textAlign:
+                                                              TextAlign.end,
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+                                                SizedBox(width: 15),
+                                                Expanded(
+                                                  child: ElevatedButton(
+                                                    style: ElevatedButton
+                                                        .styleFrom(
+                                                      padding:
+                                                          EdgeInsets.all(15),
+                                                      minimumSize:
+                                                          const Size.fromHeight(
+                                                              50),
+                                                      primary: Color.fromARGB(
+                                                          255, 189, 35, 35),
+                                                    ),
+                                                    onPressed: () {
+                                                      Navigator.push(
+                                                        context,
+                                                        MaterialPageRoute(
+                                                            builder: (context) =>
+                                                                NotificationScreen()),
+                                                      );
+                                                    },
+                                                    child: Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceBetween,
+                                                      children: [
+                                                        const Text(
+                                                          'C',
+                                                          style: TextStyle(
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                            fontSize: 24,
+                                                          ),
+                                                          textAlign:
+                                                              TextAlign.start,
+                                                        ),
+                                                        const Text(
+                                                          '10',
+                                                          style: TextStyle(
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                            fontSize: 28,
+                                                          ),
+                                                          textAlign:
+                                                              TextAlign.end,
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  );
                                 } else if (snapshot.hasError) {
                                   return Text('${snapshot.error}');
                                 }

@@ -56,11 +56,11 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
 
   void updateNotif(String idx) async {
     String url = "https://sipalingupi-api.herokuapp.com/notifs/" + idx;
-    print(url);
+    // print(url);
     final response = await http.patch(Uri.parse(url),
         body: jsonEncode({"read": true}),
         headers: {"Content-Type": "application/json"});
-    print(response.statusCode);
+    // print(response.statusCode);
   }
 
   @override
@@ -77,7 +77,6 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
       body: CustomScrollView(
         slivers: <Widget>[
           SliverAppBar(
-            forceElevated: true,
             expandedHeight: 60,
             pinned: true,
             backgroundColor: Colors.white,
